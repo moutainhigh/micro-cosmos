@@ -14,7 +14,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
-    <name>WhaleWisdom</name>
+    <name>星陨星光</name>
     <url>http://maven.apache.org</url>
 
 
@@ -54,6 +54,16 @@
         <javapoet.version>1.8.0</javapoet.version>
 
     </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.16.Final</version>
+        </dependency>
+
+    </dependencies>
 
     <repositories>
         <repository>
