@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yichen.cosmos.cloud.platform.rabbit.dao.UserRedisDao">
+    <select id="getUserById" parameterType="java.lang.String" resultType="com.yichen.cosmos.cloud.platform.bean.User">
+        select
+        *
+        from
+        wisdom_user
+        <where>
+            flag = 1
+            and
+            user_id = #{userId}
+        </where>
+
+    </select>
+
+    <select id="getOrgById" parameterType="java.util.Map"
+            resultType="com.yichen.cosmos.cloud.platform.bean.Orgnization">
+        select
+            *
+        from
+            wisdom_organization
+        where
+            org_id = #{orgId}
+    </select>
+</mapper>
