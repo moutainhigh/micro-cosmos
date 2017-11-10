@@ -34,5 +34,6 @@ public class RabbitMqAppStarter implements EmbeddedServletContainerCustomizer, C
 //					}
 //			);
         }
+        container.setPort(11001);
     }
 }

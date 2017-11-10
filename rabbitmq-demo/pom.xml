@@ -257,12 +257,6 @@
             </properties>
         </profile>
 
-        <profile>
-            <id>prod</id>
-            <properties>
-                <myenv>prod</myenv>
-            </properties>
-        </profile>
     </profiles>
 
     <build>

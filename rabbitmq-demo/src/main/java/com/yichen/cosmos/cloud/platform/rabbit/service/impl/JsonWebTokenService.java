@@ -1,18 +1,14 @@
 package com.yichen.cosmos.cloud.platform.rabbit.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yichen.cosmos.cloud.platform.bean.Response;
 import com.yichen.cosmos.cloud.platform.bean.ResponseStatus;
-import com.yichen.cosmos.cloud.platform.bean.User;
 import com.yichen.cosmos.cloud.platform.constants.Constant;
 import com.yichen.cosmos.cloud.platform.constants.RedisKeys;
 import com.yichen.cosmos.cloud.platform.dto.AccessTokenDto;
-import com.yichen.cosmos.cloud.platform.enums.CreditWisdomEnum;
 import com.yichen.cosmos.cloud.platform.exception.RefreshTokenExpiredException;
 import com.yichen.cosmos.cloud.platform.exception.UserRemovedException;
 import com.yichen.cosmos.cloud.platform.rabbit.config.RedisHelper;
-import com.yichen.cosmos.cloud.platform.rabbit.dao.UserRedisDao;
 import com.yichen.cosmos.cloud.platform.rabbit.service.IJsonWebTokenService;
 import com.yichen.cosmos.cloud.platform.util.StringTools;
 import com.yichen.cosmos.cloud.platform.util.auth.JwtHelper;
@@ -25,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -40,8 +35,6 @@ import java.util.Map;
 public class JsonWebTokenService implements IJsonWebTokenService {
     private final static Logger logger = LoggerFactory.getLogger(JsonWebTokenService.class);
 
-    @Resource
-    private UserRedisDao userRedisDao;
 
     @Override
     public AccessTokenDto createToken(Map<String, Object> params) {
@@ -100,27 +93,12 @@ public class JsonWebTokenService implements IJsonWebTokenService {
             logger.info("redis中记录的refresh_token与入参refresh_token不匹配");
             throw new RefreshTokenExpiredException("refreshToken已经过期，请重新登录");
         }
-        User user = userRedisDao.getUserById(userId);
-        if (user == null) {
-            logger.info("用户已经被删除了，无法创建新的accessToken");
-            throw new UserRemovedException("用户已经被删除了，无法创建新的accessToken");
-        }
-
         HashMap<String, Object> tokenParams = new HashMap<>(6);
-        tokenParams.put("userId", userId);
-        tokenParams.put("account", user.getAccount());
-        tokenParams.put("createdTime", System.currentTimeMillis());
-        tokenParams.put("creatorId", userId);
-        tokenParams.put("updaterId", userId);
-        tokenParams.put("orgId", user.getOrgId());
-        //fatherId:0表示主账号
-        tokenParams.put("fatherId", user.getFatherId());
         //一小时过期
         tokenParams.put("expireTime", Constant.JWT_TTL);
         AccessTokenDto tokenDto = this.createToken(tokenParams);
         if (tokenDto == null) {
             //token生成失败
-            logger.error("token生成失败.user={}", JSON.toJSONString(user));
             return new Response.Builder().code(ResponseStatus.RESPONSE_CODE_500)
                     .msg(ResponseStatus.RESPONSE_CODE_500)
                     .build().toString();
@@ -128,11 +106,6 @@ public class JsonWebTokenService implements IJsonWebTokenService {
 
         Map<String, Object> dataMap = new HashMap<>(1);
         dataMap.put("token", tokenDto);
-        if (CreditWisdomEnum.WISDOM_MAIN_ACCOUNT.getCode().equals(user.getFatherId())) {
-            dataMap.put("isParent", true);
-        } else {
-            dataMap.put("isParent", false);
-        }
 
         //将User数据存放到redis中
         RedisHelper.redisHelper.set(key, tokenDto, Constant.JWT_REFRESH_TTL);//7天过期
