@@ -71,6 +71,13 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.5.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.5.7</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
@@ -101,6 +108,7 @@
 
     <modules>
         <module>cosmos-common</module>
+        <module>netty4-userguide-demos</module>
     </modules>
 
     <distributionManagement>
