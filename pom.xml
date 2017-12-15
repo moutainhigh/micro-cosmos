@@ -109,6 +109,7 @@
     <modules>
         <module>cosmos-common</module>
         <module>netty4-userguide-demos</module>
+        <module>xunyi-rabbitmq</module>
     </modules>
 
     <distributionManagement>
