@@ -111,6 +111,7 @@
         <module>netty4-userguide-demos</module>
         <module>xunyi-rabbitmq</module>
         <module>cosmos-curator</module>
+        <module>cosmos-kafka</module>
     </modules>
 
     <distributionManagement>

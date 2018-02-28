@@ -166,6 +166,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-        <finalName>wisdom-console</finalName>
+        <finalName>xunyi-rabbitmq</finalName>
     </build>
 </project>
