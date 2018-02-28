@@ -112,6 +112,8 @@
         <module>xunyi-rabbitmq</module>
         <module>cosmos-curator</module>
         <module>cosmos-kafka</module>
+        <module>cosmos-algorithm</module>
+        <module>cosmos-activiti</module>
     </modules>
 
     <distributionManagement>
