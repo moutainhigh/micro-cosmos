@@ -33,6 +33,7 @@
     </appender>
     <logger name="com.xunyi.cloud.wisdom.activiti" level="info"/>
     <logger name="com.xunyi.cloud.wisdom.activiti.dao" level="debug"/>
+    <logger name="org.activiti.engine" level="debug"/>
     <root level="info">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILEOUT"/>
