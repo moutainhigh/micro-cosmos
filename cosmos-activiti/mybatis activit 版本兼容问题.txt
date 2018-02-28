@@ -1,0 +1,31 @@
+1.
+表数问题
+5.16.x版本  23张表
+5.18.x版本  24张表
+5.19.x版本  25张表
+
+
+2.版本兼容问题
+mybatis 与activiti整合版本问题
+http://blog.csdn.net/stone_zhy/article/details/52350435
+
+3.TestController 部署bpmn文件，查询不到 process definition 
+act_re_procdef 表为空;但junit test case 可以。
+原因 文件读取方法问题，参照官网。
+
+
+ 3.1   文件没读取到： 系统编译时，文件不存在，文件没有编译到
+ 3.2   文件读取方法有误，采取官网方式(https://www.activiti.org/quick-start)
+
+
+4. 乱码问题，需要检查bpmn文件，存在乱码
+Preparing: insert into ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_) values (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+2018-02-28 15:29:00 [main] DEBUG org.apache.ibatis.logging.jdbc.BaseJdbcLogger.debug 132 - ==> Parameters: auto_flow:2:2504(String), http://www.activiti.org/test(String), 閫氱敤鑷姩瀹℃牳娴佺▼(String), auto_flow(String), 2(Integer), 2501(String), diagram/common_auto_flow2.bpmn(String), diagram/common_auto_flow2.auto_flow.png(String), null, false(Boolean), true(Boolean), 1(Integer), (String)
+
+5.同一个流程多次部署时，需要将之前的删除（待思考）
+
+select distinct RES.* from ACT_RU_TASK RES inner join ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_ WHERE D.KEY_ = ? order by RES.ID_ asc LIMIT ? OFFSET ? 
+2018-02-28 16:00:26 [http-nio-33002-exec-4] DEBUG org.apache.ibatis.logging.jdbc.BaseJdbcLogger.debug 132 - ==> Parameters: auto_flow(String), 2147483647(Integer), 0(Integer)
+2018-02-28 16:00:26 [http-nio-33002-exec-4] DEBUG org.apache.ibatis.logging.jdbc.BaseJdbcLogger.debug 132 - <==      Total: 2
+2018-02-28 16:00:26 [http-nio-33002-exec-4] DEBUG o.activiti.engine.impl.interceptor.CommandContext.close 170 - Error while closing command context
+org.activiti.engine.ActivitiException: Query return 2 results instead of max 1

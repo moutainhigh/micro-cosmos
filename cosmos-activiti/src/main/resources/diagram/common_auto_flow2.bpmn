@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1519724668157" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
-  <process id="auto_flow" isClosed="false" isExecutable="true" name="閫氱敤鑷姩瀹℃牳娴佺▼" processType="None">
+  <process id="auto_flow" isClosed="false" isExecutable="true" name="system auto audit flow" processType="None">
     <startEvent activiti:initiator="applyUserId" id="startevent1" name="Start"/>
-    <serviceTask activiti:class="com.xunyi.cloud.wisdom.activiti.delegete.SystemAuditDelegete" activiti:exclusive="true" id="system_audit" name="绯荤粺瀹℃牳"/>
+    <serviceTask activiti:class="com.xunyi.cloud.wisdom.activiti.delegete.SystemAuditDelegete" activiti:exclusive="true" id="system_audit" name="system audit task"/>
     <endEvent id="endevent1" name="End"/>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="system_audit"/>
     <sequenceFlow id="flow2" name="pass or reject" sourceRef="system_audit" targetRef="user_audit">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${branch_condition_parameter=="pass" or branch_condition_parameter=="reject"}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask activiti:class="com.xunyi.cloud.wisdom.activiti.delegete.BizAuditDelegete" activiti:exclusive="true" id="biz_audit" name="涓氬姟澶勭悊"/>
+    <serviceTask activiti:class="com.xunyi.cloud.wisdom.activiti.delegete.BizAuditDelegete" activiti:exclusive="true" id="biz_audit" name="biz audit task"/>
     <sequenceFlow id="flow3" sourceRef="biz_audit" targetRef="endevent1"/>
-    <userTask activiti:assignee="${userId}" activiti:exclusive="true" id="user_audit" name="鐢ㄦ埛瀹℃牳"/>
+    <userTask activiti:assignee="${userId}" activiti:exclusive="true" id="user_audit" name="useraudit task"/>
     <sequenceFlow id="flow4" sourceRef="user_audit" targetRef="biz_audit"/>
   </process>
   <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">

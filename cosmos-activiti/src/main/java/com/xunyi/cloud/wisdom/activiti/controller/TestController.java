@@ -46,6 +46,27 @@ public class TestController {
     @Autowired
     private ITestService testService;
 
+    Map<String,String> processDefinitionKeyMap = new HashMap<>();
+
+
+        @RequestMapping(value = "/taskComplete", method = RequestMethod.GET)
+    public String taskComplete(HttpServletRequest request) throws Exception {
+
+        String processDefinitionKey = processDefinitionKeyMap.get("processDefinitionKey");
+        Task task = taskService.createTaskQuery().processDefinitionKey(processDefinitionKey).singleResult();
+        String name = task.getName();
+        String taskId = task.getId();
+
+        System.out.println("task id=" + taskId + ",task name=" + name);
+
+        Map<String, Object> ids = new HashMap<>();
+        ids.put("userId","thomas_id");
+        taskService.complete(taskId,ids);
+        System.out.println("task completed!");
+
+        return "processDefinitionKey："+processDefinitionKey;
+
+    }
     @RequestMapping(value = "/getTest", method = RequestMethod.GET)
     public String getTest(HttpServletRequest request) throws Exception {
         new Thread(
@@ -64,16 +85,9 @@ public class TestController {
 
 
     public void loanBPMNFile() throws Exception {
-        String fileUrl = "D:\\work\\prj\\pace\\platform\\new2\\micro-cosmos\\cosmos-activiti\\src\\main\\resources\\diagram\\common_auto_flow2.bpmn";
-        /*
-        InputStream inputStream = null;
-        try {
-            URL url = new URL(fileUrl);
-            HttpURLConnection http =  (HttpURLConnection) url.openConnection();
-            inputStream = http.getInputStream();
-            http.connect();
-        } catch (Exception e) {
-        }*/
+
+
+        String fileUrl = "D:\\work\\intelij\\csp\\micro-cosmos\\cosmos-activiti\\src\\main\\resources\\diagram\\common_auto_flow2.bpmn";
 
         try {
             File file = new File(fileUrl);
@@ -82,9 +96,15 @@ public class TestController {
                 System.out.println("file exist... ");
             }
 
-            InputStream inputStream = new FileInputStream(new File(fileUrl));
-            System.out.println("inputStream=");
-            Deployment deployment = repositoryService.createDeployment().addInputStream("auto_flow", inputStream).deploy();
+            //如果读取不到，文件没有编译进去，查看target
+//            InputStream inputStream = TestController.class.getClassLoader().getResourceAsStream("diagram/common_auto_flow2.bpmn");
+//
+//            System.out.println("inputStream="+inputStream);
+//            Deployment deployment = repositoryService.createDeployment().addInputStream("auto_flow", inputStream).deploy();
+
+            String fileUrl2 = "diagram/common_auto_flow2.bpmn";
+            Deployment deployment = repositoryService.createDeployment()
+                    .addClasspathResource(fileUrl2).deploy();
 
             System.out.println("1111111111");
             List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
@@ -107,22 +127,16 @@ public class TestController {
 
             Map<String, Object> variables = new HashMap<>();
             variables.put("branch_condition_parameter", "pass");
+            variables.put("userId", "1111111");
 
             runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
+            System.out.println("333333333:流程启动");
 
-            Task task = taskService.createTaskQuery().processDefinitionKey(processDefinitionKey).singleResult();
-            String name = task.getName();
-            String taskId = task.getId();
+            processDefinitionKeyMap.put("processDefinitionKey",processDefinitionKey);
 
-            System.out.println("task id=" + taskId + ",task name=" + name);
-            task.setAssignee("thomas");
-
-            taskService.complete(taskId);
-            System.out.println("task completed!");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 
