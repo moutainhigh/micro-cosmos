@@ -111,6 +111,8 @@
         <module>netty4-userguide-demos</module>
         <module>xunyi-rabbitmq</module>
         <module>cosmos-curator</module>
+        <module>cosmos-algorithm</module>
+        <module>cosmos-activiti</module>
     </modules>
 
     <distributionManagement>
