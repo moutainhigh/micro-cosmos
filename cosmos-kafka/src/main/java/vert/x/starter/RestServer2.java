@@ -9,6 +9,8 @@ import io.vertx.ext.web.handler.BodyHandler;
 
 
 /**
+ *
+ *官方中文文档 https://vertxchina.github.io/vertx-translation-chinese
  * Created by thomas on 2018/2/28 10:41.
  */
 public class RestServer2  extends AbstractVerticle{

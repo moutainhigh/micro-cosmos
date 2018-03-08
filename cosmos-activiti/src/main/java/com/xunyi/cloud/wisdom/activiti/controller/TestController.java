@@ -54,6 +54,8 @@ public class TestController {
 
         String processDefinitionKey = processDefinitionKeyMap.get("processDefinitionKey");
         Task task = taskService.createTaskQuery().processDefinitionKey(processDefinitionKey).singleResult();
+            String processDefinitionId = "processDefinitionId";
+            taskService.createTaskQuery().processDefinitionId(processDefinitionId).singleResult();
         String name = task.getName();
         String taskId = task.getId();
 
@@ -102,6 +104,7 @@ public class TestController {
 //            System.out.println("inputStream="+inputStream);
 //            Deployment deployment = repositoryService.createDeployment().addInputStream("auto_flow", inputStream).deploy();
 
+            //加载工作流文件
             String fileUrl2 = "diagram/common_auto_flow2.bpmn";
             Deployment deployment = repositoryService.createDeployment()
                     .addClasspathResource(fileUrl2).deploy();

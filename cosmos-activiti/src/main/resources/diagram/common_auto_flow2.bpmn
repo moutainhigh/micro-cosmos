@@ -53,7 +53,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2" sourceElement="system_audit" targetElement="user_audit">
-        <omgdi:waypoint x="387.5" y="250.0"/>
+        <omgdi:waypoint x="387.5" y="235.0"/>
         <omgdi:waypoint x="387.5" y="300.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="14.0" width="67.0" x="387.0" y="235.0"/>
