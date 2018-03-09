@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
+/**简单演示：common_auto_flow2.bpmn 
+ * 1. 文件读取加载
+ * 2. serviceTask、UserTask执行
  * Created by thomas.su on 2018/2/27 17:26.
  */
 @RestController
@@ -89,14 +91,14 @@ public class TestController {
     public void loanBPMNFile() throws Exception {
 
 
-        String fileUrl = "D:\\work\\intelij\\csp\\micro-cosmos\\cosmos-activiti\\src\\main\\resources\\diagram\\common_auto_flow2.bpmn";
+//        String fileUrl = "D:\\work\\intelij\\csp\\micro-cosmos\\cosmos-activiti\\src\\main\\resources\\diagram\\common_auto_flow2.bpmn";
 
         try {
-            File file = new File(fileUrl);
+           /* File file = new File(fileUrl);
             System.out.println("file:" + file);
             if (file.exists()) {
                 System.out.println("file exist... ");
-            }
+            }*/
 
             //如果读取不到，文件没有编译进去，查看target
 //            InputStream inputStream = TestController.class.getClassLoader().getResourceAsStream("diagram/common_auto_flow2.bpmn");

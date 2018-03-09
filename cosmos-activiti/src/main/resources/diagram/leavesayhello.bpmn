@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="leavesayhello" name="简单示例" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+      <activiti:executionListener event="end" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <serviceTask id="serviceTask" name="Service Task" activiti:class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.delegate.LeaveSayHelloDelegate">
+      <extensionElements>
+        <activiti:executionListener event="create" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+        <activiti:executionListener event="assignment" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+        <activiti:executionListener event="complete" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+        <activiti:executionListener event="delete" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="serviceTask">
+      <extensionElements>
+        <activiti:executionListener event="take" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" class="com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener.LeaveSayHelloGlobalListener"></activiti:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_leavesayhello">
+    <bpmndi:BPMNPlane bpmnElement="leavesayhello" id="BPMNPlane_leavesayhello">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="320.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="serviceTask" id="BPMNShape_serviceTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="285.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="320.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="337.0" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="337.0" y="170.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="337.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="337.0" y="270.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

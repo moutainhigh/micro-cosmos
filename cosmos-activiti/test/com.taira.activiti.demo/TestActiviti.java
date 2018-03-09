@@ -6,6 +6,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.junit.Test;
 
 /**
+ * 参照官方示例代码，创建activiti所需表 https://www.activiti.org/quick-start
  * Created by thomas on 2018/2/28 13:52.
  */
 public class TestActiviti {
