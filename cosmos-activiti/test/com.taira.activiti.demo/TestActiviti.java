@@ -1,3 +1,4 @@
+package com.tairan.activiti.demo;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
