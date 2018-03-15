@@ -15,6 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>com.xunyi.cloud.wisdom.activiti.ActivitiAppStarter</start-class>
         <activiti-version>5.18.0</activiti-version>
+        <!-- <activiti-bpmn>7-201801-EA</activiti-bpmn> --><!--最高版本  7-201801-EA -->
+        
     </properties>
 
     <dependencies>
@@ -42,6 +44,36 @@
 		    <artifactId>groovy-all</artifactId>
 		    <version>3.0.0-alpha-1</version>
 		</dependency>
+		<dependency>
+	      <groupId>org.activiti</groupId>
+	      <artifactId>activiti-bpmn-layout</artifactId>
+	      <version>${activiti-version}</version>
+	    </dependency>
+    	<!-- Bpmn和xml文件的转换 start -->
+    	<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-model -->
+		<dependency>
+		    <groupId>org.activiti</groupId>
+		    <artifactId>activiti-bpmn-model</artifactId>
+		    <version>${activiti-version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-converter -->
+		<dependency>
+		    <groupId>org.activiti</groupId>
+		    <artifactId>activiti-bpmn-converter</artifactId>
+		    <version>${activiti-version}</version>
+		</dependency>
+
+		
+		<!-- Bpmn和xml文件的转换 end -->
+		
+	     <dependency>
+	      <groupId>commons-io</groupId>
+	      <artifactId>commons-io</artifactId>
+	      <version>2.4</version>
+	      <scope>test</scope>
+	    </dependency>
+	    
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>

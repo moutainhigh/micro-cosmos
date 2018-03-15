@@ -8,6 +8,14 @@ package com.xunyi.cloud.wisdom.activiti.enums;
  */
 public enum DiagramEnums {
 	
+	//测试XML、Image 文件输出流
+	testxmlimage("diagram/testxmlimage.bpmn","testxmlimage task","testxmlimage"),
+	//分歧测试
+	splitflow("diagram/chapter4/splitflow.bpmn","splittest task","splitflow"),
+	
+	//接收任务测试
+	receiveTask("diagram/chapter4/receivetask.bpmn","receive task","receiveTask"),
+	
 	
 	//定时器启动
 	timecycle("diagram/chapter4/timecycle.bpmn","time cycle","timecycle_20180312"),//timecycle_20180312

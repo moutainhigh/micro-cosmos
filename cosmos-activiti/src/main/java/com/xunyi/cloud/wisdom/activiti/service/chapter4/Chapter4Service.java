@@ -9,4 +9,7 @@ package com.xunyi.cloud.wisdom.activiti.service.chapter4;
 public interface Chapter4Service {
 	public void startProcessOfTimeCycle();
 
+	public void startProcessOfReceiveTask();
+	
+	public void startProcessOfSplitTest(Integer day);
 }

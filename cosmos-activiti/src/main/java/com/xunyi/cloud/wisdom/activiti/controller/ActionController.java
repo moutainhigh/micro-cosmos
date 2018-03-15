@@ -12,15 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xunyi.cloud.wisdom.activiti.service.AuditFlowService;
 import com.xunyi.cloud.wisdom.activiti.service.LeaveSayHelloService;
 import com.xunyi.cloud.wisdom.activiti.service.chapter4.Chapter4Service;
+import com.xunyi.cloud.wisdom.activiti.service.chapter4.NativeService;
 import com.yichen.cosmos.cloud.platform.bean.Response;
 import com.yichen.cosmos.cloud.platform.bean.ResponseStatus;
 
 /**
+ * 执行工作流
  * @Description:
  * @author thomas
  * @version v1.0  
@@ -39,6 +42,65 @@ public class ActionController {
 	private AuditFlowService auditFlowService;
 	@Autowired
 	private Chapter4Service chapter4Service;
+	@Autowired
+	private NativeService nativeService;
+	
+	
+	@RequestMapping(value = "/nativeInfo", method = RequestMethod.GET)
+	public String nativeInfo(HttpServletRequest request){
+		nativeService.nativeInfo();
+		return new Response.Builder().code(ResponseStatus.RESPONSE_CODE_200).msg(ResponseStatus.RESPONSE_MSG_200)
+				 .data(request.getPathInfo())
+                .build().toString();
+	}
+	
+	
+	
+	/**
+	 * 请求路径http://localhost:33002/xunyi-activiti/action/startProcessOfSplitTest?day=2
+	 * @Title:        startProcessOfSplitTest 
+	 * @Description:  
+	 * @param:        @param request
+	 * @param:        @param day
+	 * @param:        @return    
+	 * @return:       String    
+	 * @throws 
+	 * @author  	<a href="1165030287@qq.com">thomas</a>     
+	 * @Date 		2018年3月13日 下午2:31:07
+	 */
+	@RequestMapping(value = "/startProcessOfSplitTest", method = RequestMethod.GET)
+	public String startProcessOfSplitTest(HttpServletRequest request,@RequestParam("day")Integer day){
+		chapter4Service.startProcessOfSplitTest(day);
+		return new Response.Builder().code(ResponseStatus.RESPONSE_CODE_200).msg(ResponseStatus.RESPONSE_MSG_200)
+				 .data(request.getPathInfo())
+                .build().toString();
+	}
+	
+	
+	
+	
+	/**
+	 * 请求路径http://localhost:33002/xunyi-activiti/action/startProcessOfReceiveTask
+	 * @Title:        startProcessOfReceiveTask 
+	 * @Description:  
+	 * @param:        @param request
+	 * @param:        @return    
+	 * @return:       String    
+	 * @throws 
+	 * @author  	<a href="1165030287@qq.com">thomas</a>     
+	 * @Date 		2018年3月13日 上午10:52:08
+	 * 
+	 * 接收任务测试
+	 */
+	@RequestMapping(value = "/startProcessOfReceiveTask", method = RequestMethod.GET)
+	public String startProcessOfReceiveTask(HttpServletRequest request){
+		chapter4Service.startProcessOfReceiveTask();
+		return new Response.Builder().code(ResponseStatus.RESPONSE_CODE_200).msg(ResponseStatus.RESPONSE_MSG_200)
+				 .data(request.getPathInfo())
+                .build().toString();
+	}
+	
+	
 	
 	/**
 	 * 

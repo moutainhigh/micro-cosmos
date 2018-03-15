@@ -1,6 +1,102 @@
 
+worklog:
 
-2018.03.12
+
+
+2018.03.14 周三
+1. 多实例 TODO
+2. 子流程---> 调用活动（call activiti）
+3. activiti:initiator
+activiti学习资料--initiator的作用及其使用
+http://blog.csdn.net/howareyoutodaysoft/article/details/8081577
+
+
+
+
+
+----------------------------------------------------------------------------------------
+
+2018.03.13  周二
+1. 分配用户任务的三种方式
+http://blog.csdn.net/zjx86320/article/details/50388157
+assigne 分配
+claim   认领
+
+2. 用户和用户组的关系
+http://blog.csdn.net/cq1982/article/details/45560897
+
+3. 任务分配，动态表单设定任务的接收人及接受组
+利用spring service 的bean动态设定人或组
+http://blog.csdn.net/ak57193856/article/details/78053417
+
+4.事件监听器  EventListener/ TenantId  /线条件
+
+>>>>>  4.1 TenantId: 涉及到了工作流多租户的问题
+http://blog.csdn.net/simplemurrina/article/details/74993068
+
+TenantId 本身并无太多含义，只是作为一个标记
+考虑问题：多引擎多租户解决方案
+
+
+>>>>>>>  4.2 
+监听器：执行监听器（ExecutionListener）、任务监听器（TaskListener）、事件监听器（ActivitiEventListener）
+http://blog.csdn.net/as154930786/article/details/64919563
+
+事件列表：
+http://blog.csdn.net/u010009709/article/details/74177731
+
+全局事件监听器配置>> riskcontrol-activiti.xml, 属性：eventListeners
+
+>>>>>>> 4.3 线条件
+
+TODO
+
+
+
+5. 概念：信号  、边界 、 多实例类型 、 native/ Command
+
+TODO
+
+native：本地化查询，直接面向数据库
+http://blog.csdn.net/cs1075341779/article/details/52817883
+
+
+Activiti6特性
+http://www.shareniu.com/article/30.htm
+
+
+Bpmn和xml文件相互转化
+http://blog.csdn.net/as154930786/article/details/64906110
+
+
+
+6. 分歧节点  exclusiveGateway 当所有的条件都不满足时，走默认线
+【但】默认线无需设置条件
+
+异常描述：
+Tue Mar 13 14:32:01 CST 2018
+There was an unexpected error (type=Internal Server Error, status=500).
+Errors while parsing: [Validation set: 'activiti-executable-process' 
+| Problem: 'activiti-exclusive-gateway-condition-on-seq-flow'] : 
+Default sequenceflow has a condition, which is not allowed - 
+[Extra info : processDefinitionId = splitfow | 
+processDefinitionName = 分歧条件测试 | | id = exclusivegateway1 | 
+| activityName = Exclusive Gateway | ] ( line: 5, column: 92)
+
+
+7. activiti bpmnModel使用 及理解
+http://blog.csdn.net/qq_30739519/article/details/51271580
+
+Activiti 由bpmn文件到BpmnModel实体类转换
+https://m.aliyun.com/yunqi/articles/54820
+博客文章学习
+http://blog.csdn.net/jiankunking/article/category/6167713
+【TODO】
+
+
+
+---------------------------------------------------------------------------------------------------------
+2018.03.12  周一
 1. 定时器循环执行
 
 知识点：
@@ -10,6 +106,17 @@ http://blog.csdn.net/hyperhawk/article/details/6694211
 https://www.w3cschool.cn/groovy/groovy_basic_syntax.html
 
 
-2.
+2.一个客户回访计划的提醒功能也加到工作流当中,Activiti定时任务示例
+
+http://lucky16.iteye.com/blog/1775660
+
+3.引入动态生成工作流Test
+com.tairan.activiti.demo.dynamic.DynamicActivitiProcessTest
+
+
+4. UUID 生成策略
+http://www.kafeitu.me/activiti/2013/08/30/using-uuid-as-primary-key-in-activiti.html
+
+
 
 
