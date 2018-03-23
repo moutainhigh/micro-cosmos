@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+   <!--     https://www.jianshu.com/p/e09d2370b796-->
+<generatorConfiguration>
+    <!-- ojdbc6.jar已经直接放到项目中,无需指定了,同时mysql驱动包也一样,这里同样无需指定 -->
+    <!-- <classPathEntry location="ojdbc6.jar" /> -->
+    <context id="context1" targetRuntime="MyBatis3">
+        <!-- 指定生成的java文件的编码,没有直接生成到项目时中文可能会乱码 -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 这里的type里写的是你的实现类的类全路径 -->
+        <commentGenerator type="com.xunyi.cloud.wisdom.MybatisGenerator.MyCommentGenerator">
+        </commentGenerator>
+
+       <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                  connectionURL="jdbc:mysql://10.200.133.21:3306/fengdai_riskcontrol?useUnicode=true&amp;characterEncoding=utf-8"
+                        userId="root"
+                        password="kse20429hfds23240azxws">
+                 <!--   针对mysql数据库-->
+                    <property name="useInformationSchema" value="true"></property>
+       </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- dto class -->
+        <javaModelGenerator targetPackage="com.tairanchina.fd.loan.entity"
+                            targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- mybatis xml file -->
+        <sqlMapGenerator targetPackage="com.tairanchina.fd.loan.dao"
+                         targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!-- mapper class -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.tairanchina.fd.loan.dao" targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+
+        <!--不生成帮助类（Exmaples） -->
+        <!-- enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+            enableSelectByExample="false" selectByExampleQueryId="false" -->
+        <!--已生成的表 <table schema="demo" tableName="USER" domainObjectName="User"></table> -->
+        <table schema="" tableName="entrust_order_batch_relate_2_organization"
+               domainObjectName="EntrustOrderBatchRelate2Organization"
+               mapperName="EntrustOrderBatchRelate2OrganizationDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false"
+               >
+        </table>
+
+        <table schema="" tableName="entrust_order_manage"
+               domainObjectName="EntrustOrderManage"
+               mapperName="EntrustOrderManageDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false"
+        >
+        </table>
+
+        <table schema="" tableName="entrust_order_batch_manage"
+               domainObjectName="EntrustOrderBatchManage"
+               mapperName="EntrustOrderBatchManageDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+    </context>
+</generatorConfiguration>
