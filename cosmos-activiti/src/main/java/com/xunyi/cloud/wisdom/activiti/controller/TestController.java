@@ -2,23 +2,27 @@ package com.xunyi.cloud.wisdom.activiti.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.xunyi.cloud.wisdom.activiti.service.ITestService;
+import com.yichen.cosmos.cloud.platform.bean.Response;
+import com.yichen.cosmos.cloud.platform.bean.ResponseStatus;
+import com.yichen.cosmos.cloud.platform.util.HttpsUtils;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**简单演示：common_auto_flow2.bpmn 
  * 1. 文件读取加载
@@ -29,6 +33,7 @@ import java.util.Map;
 @RequestMapping(value = "/test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @Autowired
     private RepositoryService repositoryService;
     @Autowired
@@ -143,6 +148,32 @@ public class TestController {
             e.printStackTrace();
         }
 
+    }
+
+
+    @RequestMapping(value = "/testTimeOut2Node", method = RequestMethod.POST)
+    public String testTimeOut2Node(HttpServletRequest request,@RequestBody String param){
+        logger.info("调用的参数：{}",param);
+        String url = "http://127.0.0.1:33001/xunyi-rabbitmq/start/testTimeOut3Node";
+        Map<String,String> params = new HashMap<>();
+        params.put("name","thomas-node2");
+        params.put("thread-name",Thread.currentThread().getName());
+        try{
+
+            long start = System.currentTimeMillis();
+            TimeUnit.MINUTES.sleep(1);
+            String result = HttpsUtils.doPost(url,JSON.toJSONString(params));
+
+            logger.info("第二个节点 result={}，本身休眠5秒，统计耗时：{}",result,System.currentTimeMillis()-start);
+        }catch (Exception e){
+            logger.error("http 超时调用异常",e);
+            e.printStackTrace();
+            return new Response.Builder().code(ResponseStatus.RESPONSE_CODE_500).msg(ResponseStatus.RESPONSE_MSG_500)
+                    .build().toString();
+        }
+        return new Response.Builder().code(ResponseStatus.RESPONSE_CODE_200).msg(ResponseStatus.RESPONSE_MSG_200)
+                .data(params)
+                .build().toString();
     }
 
 

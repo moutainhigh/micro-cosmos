@@ -31,6 +31,7 @@ public class TestWordSpout extends BaseRichSpout{
         final String[] words = new String[]{"thomas","nathan","mike","jackson","golda","bertels"};
         final Random random = new Random();
         final String word = words[random.nextInt(words.length)];
+        System.out.println("发送数据 word="+word);
         _collector.emit(new Values(word));
     }
 

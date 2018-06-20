@@ -1,5 +1,9 @@
 package com.xunyi.cloud.wisdom.activiti.service.event;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -13,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @Date 2018年3月13日 下午3:43:55 
  * @Description
  */
-public class GlobalEventListener implements ActivitiEventListener{
+public class GlobalEventListener implements ActivitiEventListener,ExecutionListener,TaskListener{
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalEventListener.class);
 	
@@ -54,6 +58,28 @@ public class GlobalEventListener implements ActivitiEventListener{
 	@Override
 	public boolean isFailOnException() {
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.activiti.engine.delegate.TaskListener#notify(org.activiti.engine.delegate.DelegateTask)
+	 */
+	@Override
+	public void notify(DelegateTask delegateTask) {
+		String taskId = delegateTask.getId();
+		String taskName = delegateTask.getName();
+		logger.info("task id={},task name={}",taskId,taskName);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.activiti.engine.delegate.ExecutionListener#notify(org.activiti.engine.delegate.DelegateExecution)
+	 */
+	@Override
+	public void notify(DelegateExecution execution) throws Exception {
+		String executionId = execution.getId();
+		String eventName = execution.getEventName();
+		logger.info("executionId={},eventName={}",executionId,eventName);
+		
 	}
 
 }

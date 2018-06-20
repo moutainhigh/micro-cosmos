@@ -13,13 +13,20 @@
         <commentGenerator type="com.xunyi.cloud.wisdom.MybatisGenerator.MyCommentGenerator">
         </commentGenerator>
 
-       <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                  connectionURL="jdbc:mysql://10.200.133.21:3306/fengdai_riskcontrol?useUnicode=true&amp;characterEncoding=utf-8"
+       <!--<jdbcConnection driverClass="com.mysql.jdbc.Driver"-->
+                  <!--connectionURL="jdbc:mysql://10.200.133.21:3306/fengdai_riskcontrol?useUnicode=true&amp;characterEncoding=utf-8"-->
+                        <!--userId="root"-->
+                        <!--password="kse20429hfds23240azxws">-->
+                 <!--&lt;!&ndash;   针对mysql数据库&ndash;&gt;-->
+                    <!--<property name="useInformationSchema" value="true"></property>-->
+       <!--</jdbcConnection>-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://10.200.150.9:3306/whale_wisdom?useUnicode=true&amp;characterEncoding=utf-8"
                         userId="root"
-                        password="kse20429hfds23240azxws">
-                 <!--   针对mysql数据库-->
-                    <property name="useInformationSchema" value="true"></property>
-       </jdbcConnection>
+                        password="123456">
+            <!--   针对mysql数据库-->
+            <property name="useInformationSchema" value="true"></property>
+        </jdbcConnection>
 
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false" />
@@ -49,7 +56,7 @@
         <!-- enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
             enableSelectByExample="false" selectByExampleQueryId="false" -->
         <!--已生成的表 <table schema="demo" tableName="USER" domainObjectName="User"></table> -->
-        <table schema="" tableName="entrust_order_batch_relate_2_organization"
+      <!--  <table schema="" tableName="entrust_order_batch_relate_2_organization"
                domainObjectName="EntrustOrderBatchRelate2Organization"
                mapperName="EntrustOrderBatchRelate2OrganizationDao"
                enableCountByExample="false"
@@ -65,14 +72,24 @@
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false"
         >
-        </table>
+        </table>-->
 
-        <table schema="" tableName="entrust_order_batch_manage"
-               domainObjectName="EntrustOrderBatchManage"
-               mapperName="EntrustOrderBatchManageDao"
+
+    <table schema="" tableName="async_callback_record"
+               domainObjectName="AsyncCallbackRecord"
+               mapperName="AsyncCallbackRecordDao"
                enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
-        </table>
+    </table>
+
+  <!--      <table schema="" tableName="apply_model_field"
+               domainObjectName="applyModelFieldDao"
+               mapperName="apply_model_field"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>-->
+
     </context>
 </generatorConfiguration>

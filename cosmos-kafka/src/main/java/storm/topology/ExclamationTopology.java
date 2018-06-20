@@ -6,10 +6,9 @@ import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
 import org.apache.storm.generated.AuthorizationException;
 import org.apache.storm.generated.InvalidTopologyException;
-import org.apache.storm.testing.TestWordSpout;
 import org.apache.storm.topology.TopologyBuilder;
-import org.apache.storm.utils.Utils;
 import storm.bolt.ExclamationBolt;
+import storm.spout.TestWordSpout;
 
 /**
  * @Author:thomas
@@ -35,11 +34,17 @@ public class ExclamationTopology {
             config.setNumWorkers(3);
             StormSubmitter.submitTopology(args[0],config,builder.createTopology());
         }else{
+            System.out.println("本地集群运行开始=================");
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("test",config,builder.createTopology());
-            Utils.sleep(10000);
-            cluster.killTopology("test");
-            cluster.shutdown();
+
+            //本地模式开发
+            //将这部分代码注释掉，将不会出现各种连接异常
+//            Utils.sleep(10000);
+//            cluster.killTopology("test");
+//            cluster.shutdown();
+//            System.out.println("本地集群运行结束=================");
+
         }
     }
 }

@@ -20,8 +20,8 @@ public class KafkaProducer extends Thread{
 
     public KafkaProducer(String topic){
         props.put("serializer.class", "kafka.serializer.StringEncoder");
-        props.put("metadata.broker.list", "10.200.153.10:9092");
-        props.put("broker.list", "10.200.153.10:9092");
+        props.put("metadata.broker.list", "127.0.0.1:9092");
+        props.put("broker.list", "127.0.0.1:9092");
         producer = new Producer<>(new ProducerConfig(props));
 
         this.topic = topic;
@@ -32,8 +32,9 @@ public class KafkaProducer extends Thread{
         int messageNo = 1;
         while(true){
             String messageStr = new String("Message_"+messageNo);
-            logger.info("Send:"+messageStr);
-            producer.send(new KeyedMessage<Integer, String>(topic,messageStr));
+            System.out.println("生产者生产的消息："+Thread.currentThread().getName()+ messageStr);
+
+            producer.send(new KeyedMessage<Integer, String>(topic,Thread.currentThread().getName()+ messageStr));
             messageNo++;
 
             try{

@@ -8,6 +8,8 @@ package com.sxy.kafkademo;
  */
 public class KafkaConsumerProducerDemo {
    public static void main(String[] args){
+       System.out.println("kafka demo 开始测试。。。。。");
+
        KafkaProducer producerThread = new KafkaProducer(KafkaProperties.topic);
        producerThread.start();
 

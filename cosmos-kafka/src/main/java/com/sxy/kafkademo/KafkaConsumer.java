@@ -47,7 +47,8 @@ public class KafkaConsumer extends  Thread{
         KafkaStream<byte[], byte[]> stream = consumerMap.get(topic).get(0);
         ConsumerIterator<byte[], byte[]> it = stream.iterator();
         while (it.hasNext()) {
-            logger.info("receive：" + new String(it.next().message()));
+
+            System.out.println("=====》消费者收到的消息："+ new String(it.next().message()));
             try {
                 sleep(3000);
             } catch (InterruptedException e) {

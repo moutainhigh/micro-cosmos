@@ -114,6 +114,7 @@
         <module>cosmos-kafka</module>
         <module>cosmos-algorithm</module>
         <module>cosmos-activiti</module>
+        <module>cosmos-storm</module>
     </modules>
 
     <distributionManagement>

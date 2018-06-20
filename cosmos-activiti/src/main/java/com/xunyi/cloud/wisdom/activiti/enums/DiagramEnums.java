@@ -8,6 +8,11 @@ package com.xunyi.cloud.wisdom.activiti.enums;
  */
 public enum DiagramEnums {
 	
+	//第五章
+	
+	
+	
+	//====================>=>=>====================================================
 	//测试XML、Image 文件输出流
 	testxmlimage("diagram/testxmlimage.bpmn","testxmlimage task","testxmlimage"),
 	//分歧测试
