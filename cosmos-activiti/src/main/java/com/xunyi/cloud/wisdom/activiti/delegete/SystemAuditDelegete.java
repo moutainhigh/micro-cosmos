@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class SystemAuditDelegete implements JavaDelegate {
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution){
         System.out.println("========[system]========================");
         System.out.println("system audit..............");
         Map<String, Object> variables =  execution.getVariables();

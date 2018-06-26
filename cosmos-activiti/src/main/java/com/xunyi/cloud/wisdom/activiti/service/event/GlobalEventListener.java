@@ -75,7 +75,7 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 	 * @see org.activiti.engine.delegate.ExecutionListener#notify(org.activiti.engine.delegate.DelegateExecution)
 	 */
 	@Override
-	public void notify(DelegateExecution execution) throws Exception {
+	public void notify(DelegateExecution execution) {
 		String executionId = execution.getId();
 		String eventName = execution.getEventName();
 		logger.info("executionId={},eventName={}",executionId,eventName);

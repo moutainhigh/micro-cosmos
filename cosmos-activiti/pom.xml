@@ -25,48 +25,54 @@
         http://blog.csdn.net/stone_zhy/article/details/52350435
         https://www.bbsmax.com/A/E35pel3Rdv/
         -->
-        <dependency>
+     <!--   <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-engine</artifactId>
             <version>${activiti-version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+      <!--  <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
             <version>${activiti-version}</version>
-        </dependency>
+        </dependency>-->
         <!--activiti end-->
-        <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all 
-        activiti 设置groovy执行脚本时，需引入groovy的jar或依赖
-        -->
-		<dependency>
-		    <groupId>org.codehaus.groovy</groupId>
-		    <artifactId>groovy-all</artifactId>
-		    <version>3.0.0-alpha-1</version>
-		</dependency>
-		<dependency>
+
+		<!--<dependency>
 	      <groupId>org.activiti</groupId>
 	      <artifactId>activiti-bpmn-layout</artifactId>
 	      <version>${activiti-version}</version>
-	    </dependency>
+	    </dependency>-->
     	<!-- Bpmn和xml文件的转换 start -->
     	<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-model -->
-		<dependency>
+		<!--<dependency>
 		    <groupId>org.activiti</groupId>
 		    <artifactId>activiti-bpmn-model</artifactId>
 		    <version>${activiti-version}</version>
-		</dependency>
+		</dependency>-->
 
 		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-converter -->
-		<dependency>
+	<!--	<dependency>
 		    <groupId>org.activiti</groupId>
 		    <artifactId>activiti-bpmn-converter</artifactId>
 		    <version>${activiti-version}</version>
-		</dependency>
-
-		
+		</dependency>-->
 		<!-- Bpmn和xml文件的转换 end -->
-		
+
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all
+      activiti 设置groovy执行脚本时，需引入groovy的jar或依赖
+      -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.0-alpha-1</version>
+        </dependency>
+
 	     <dependency>
 	      <groupId>commons-io</groupId>
 	      <artifactId>commons-io</artifactId>
@@ -125,6 +131,7 @@
             <artifactId>cosmos-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+
 
 
     </dependencies>

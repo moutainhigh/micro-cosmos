@@ -21,7 +21,7 @@ public class LeaveSayHelloDelegate implements JavaDelegate{
 	 * @see org.activiti.engine.delegate.JavaDelegate#execute(org.activiti.engine.delegate.DelegateExecution)
 	 */
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 		logger.info("this is a hello example.");
 		
 	}

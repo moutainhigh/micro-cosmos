@@ -1,7 +1,8 @@
 package com.xunyi.cloud.wisdom.activiti.service.chapter4.impl;
 
-import java.util.Map;
-
+import com.xunyi.cloud.wisdom.activiti.enums.DiagramEnums;
+import com.xunyi.cloud.wisdom.activiti.service.BaseService;
+import com.xunyi.cloud.wisdom.activiti.service.chapter4.Chapter4Service;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -9,9 +10,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Service;
 
-import com.xunyi.cloud.wisdom.activiti.enums.DiagramEnums;
-import com.xunyi.cloud.wisdom.activiti.service.BaseService;
-import com.xunyi.cloud.wisdom.activiti.service.chapter4.Chapter4Service;
+import java.util.Map;
 
 /**
  * @author thomas
@@ -103,8 +102,9 @@ public class Chapter4ServiceImpl extends BaseService implements Chapter4Service 
 //			 使用流程变量设置当日的销售额 
 			 runtimeService.setVariable(exeId1, "dailyAmount", 20000);
 			 
-			 //向后执行一步  
-			 runtimeService.signal(exeId1);
+			 //向后执行一步
+			//activiti-version>5.18.0
+//			 runtimeService.signal(exeId1);
 			 //查询执行对象表,使用流程实例ID和当前活动的名称（receivetask2） 
 			 String acId2="sendEmailToBoss";
 			 Execution execution2 = runtimeService.createExecutionQuery().processInstanceId(processInstanceId).activityId(acId2).singleResult();
@@ -112,8 +112,9 @@ public class Chapter4ServiceImpl extends BaseService implements Chapter4Service 
 			 
 			 Integer dailyAmount = (Integer)runtimeService.getVariable(exeId2, "dailyAmount");
 			 logger.info("给老板发送短信：内容，当日销售额：{}",dailyAmount);
-//			 向后执行一步  
-			 runtimeService.signal(exeId2);
+//			 向后执行一步
+			//activiti-version>5.18.0
+//			 runtimeService.signal(exeId2);
 			 
 			 //判断流程是否结束  
 			 ProcessInstance nowP1 = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();

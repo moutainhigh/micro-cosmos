@@ -1,7 +1,5 @@
 package com.xunyi.cloud.wisdom.activiti.service.leavesayhello.listener;
 
-import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -9,7 +7,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
+import java.util.Map;
 
 
 /**
@@ -49,13 +47,15 @@ public class LeaveSayHelloGlobalListener implements ExecutionListener,TaskListen
 	 * @see org.activiti.engine.delegate.ExecutionListener#notify(org.activiti.engine.delegate.DelegateExecution)
 	 */
 	@Override
-	public void notify(DelegateExecution execution) throws Exception {
-		
+	public void notify(DelegateExecution execution) {
+
 		//流程实例start、end、take的时候调用。take是监控连线的时候使用的。
 		
 		String eventName = execution.getEventName();
 		String activityId = execution.getCurrentActivityId();
-		String activityName = execution.getCurrentActivityName();
+		//activiti-version>5.18.0
+//		String activityName = execution.getCurrentActivityName();
+		String activityName = "";
 		
 		if(EVENTNAME_START.equals(eventName)){
 			logger.info("开始节点启动了.....activityId={},activityName={}",activityId,activityName);

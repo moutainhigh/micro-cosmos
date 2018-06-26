@@ -117,6 +117,26 @@ com.tairan.activiti.demo.dynamic.DynamicActivitiProcessTest
 4. UUID 生成策略
 http://www.kafeitu.me/activiti/2013/08/30/using-uuid-as-primary-key-in-activiti.html
 
+--------------------------------------------------------------------------------------------------------------
+20180626
+1. pom.xml 文件添加依赖，将版本 <activiti-version>5.18.0 注释；需要依赖 <activiti-version>5.18.0 的，缺少方法，属性已经注释
+   <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
+    被注释的地方有：
+        riskcontrol-activiti.xml 中 属性 jobExecutorActivate
+        -------------
+        GlobalEventListener
+        LeaveSayHelloDelegate
+        LeaveSayHelloGlobalListener
+
+        -- 涉及抛出异常的方法等
+
+2. 添加包 com.xunyi.cloud.wisdom.activiti.zero
+  2.1 动态加载 rule 文件
 
 
 

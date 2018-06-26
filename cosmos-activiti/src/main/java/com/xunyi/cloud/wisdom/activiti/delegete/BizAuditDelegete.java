@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class BizAuditDelegete implements JavaDelegate {
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
 
         System.out.println("========[biz]========================");
         System.out.println("biz  audit ............");

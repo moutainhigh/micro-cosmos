@@ -13,9 +13,13 @@
         <property name="transactionManager" ref="transactionManager"/>
         <!-- <property name="deploymentResources" value="classpath*:/act/deployments/**/*.bar"/> -->
         <property name="databaseSchemaUpdate" value="true"/>
+
+        <!--<activiti-version>5.18.0-->
         <!-- 定时器只会在工作的执行者是可用的状态下被点燃。 http://sdywcd.iteye.com/blog/1915467
         	（也就是说，jobExecutorActivate 需要在activiti.cfg.xml中设置成true；这个job executor默认是不可用的 false） -->
-        <property name="jobExecutorActivate" value="true"/>
+        <!--<property name="jobExecutorActivate" value="true"/>-->
+
+        
         <property name="history" value="full"/>
         <property name="processDefinitionCacheLimit" value="10"/>
         <!-- 生成流程图的字体 -->
