@@ -230,6 +230,24 @@
             <artifactId>mybatis</artifactId>
             <version>3.2.8</version>
         </dependency>
+        <!-- kie drools -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-spring</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-test</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+
+        <!-- spring热部署-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>springloaded</artifactId>
+            <version>1.2.1.RELEASE</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -9,84 +9,31 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cosmos-activiti</artifactId>
+    <groupId>com.yichen.cosmos.cloud.platform</groupId>
+    <artifactId>cosmos-jbpm</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>com.xunyi.cloud.wisdom.activiti.ActivitiAppStarter</start-class>
-        <activiti-version>5.18.0</activiti-version>
-        <!-- <activiti-bpmn>7-201801-EA</activiti-bpmn> --><!--最高版本  7-201801-EA -->
-        
+        <start-class>com.tairan.cloud.demo.JBPMAppStarter</start-class>
     </properties>
 
     <dependencies>
-        <!--activiti start-->
-        <!--注意activiti与mybatis的版本兼容问题
-        http://blog.csdn.net/stone_zhy/article/details/52350435
-        https://www.bbsmax.com/A/E35pel3Rdv/
-        -->
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-engine</artifactId>
-            <version>${activiti-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-spring</artifactId>
-            <version>${activiti-version}</version>
-        </dependency>
-        <!--activiti end-->
-
-		<dependency>
-	      <groupId>org.activiti</groupId>
-	      <artifactId>activiti-bpmn-layout</artifactId>
-	      <version>${activiti-version}</version>
-	    </dependency>
-    	<!-- Bpmn和xml文件的转换 start -->
-    	<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-model -->
-		<dependency>
-		    <groupId>org.activiti</groupId>
-		    <artifactId>activiti-bpmn-model</artifactId>
-		    <version>${activiti-version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-converter -->
-		<dependency>
-		    <groupId>org.activiti</groupId>
-		    <artifactId>activiti-bpmn-converter</artifactId>
-		    <version>${activiti-version}</version>
-		</dependency>
-		<!-- Bpmn和xml文件的转换 end -->
-
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-json-converter</artifactId>
-            <version>${activiti-version}</version>
-        </dependency>
-
-
-        <!-- <dependency>
-             <groupId>org.activiti</groupId>
-             <artifactId>activiti-spring-boot-starter-basic</artifactId>
-             <version>6.0.0</version>
-         </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all
       activiti 设置groovy执行脚本时，需引入groovy的jar或依赖
       -->
-       <dependency>
+        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>3.0.0-alpha-1</version>
         </dependency>
 
-	     <dependency>
-	      <groupId>commons-io</groupId>
-	      <artifactId>commons-io</artifactId>
-	      <version>2.4</version>
-	      <scope>test</scope>
-	    </dependency>
-	    
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
@@ -135,21 +82,17 @@
             <version>${druid.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.yichen.cosmos.cloud.platform</groupId>
-            <artifactId>cosmos-common</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.drools/knowledge-api -->
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>knowledge-api</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
 
+         <dependency>
+                <groupId>com.yichen.cosmos.cloud.platform</groupId>
+                <artifactId>cosmos-common</artifactId>
+                <version>${project.version}</version>
+         </dependency>
     </dependencies>
-
-
     <profiles>
         <profile>
             <id>local</id>
@@ -201,15 +144,25 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <dependencies>
-                    <!-- spring热部署-->
+                    <!-- spring热部署 -->
                     <dependency>
                         <groupId>org.springframework</groupId>
                         <artifactId>springloaded</artifactId>
-                        <version>1.2.1.RELEASE</version>
+                        <version>1.2.8.RELEASE</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <mainClass>com.tairan.cloud.demo.JBPMAppStarter</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
-        <finalName>cosmos-activiti</finalName>
+        <finalName>cosmos-jbpm</finalName>
     </build>
 </project>

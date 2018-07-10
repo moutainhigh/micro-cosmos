@@ -1,4 +1,4 @@
-package com.xunyi.cloud.wisdom.activiti.service.event;
+package com.tairan.activiti.demo.dynamic.listeners;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
  * @Date 2018年3月13日 下午3:43:55 
  * @Description
  */
-public class GlobalEventListener implements ActivitiEventListener,ExecutionListener,TaskListener{
+public class TestGlobalEventListener implements ActivitiEventListener,ExecutionListener,TaskListener{
 
-	private static final Logger logger = LoggerFactory.getLogger(GlobalEventListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(TestGlobalEventListener.class);
 	
 	/* (non-Javadoc)
 	 * @see org.activiti.engine.delegate.event.ActivitiEventListener#onEvent(org.activiti.engine.delegate.event.ActivitiEvent)
@@ -49,7 +49,7 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 		}*/
 
 
-		System.out.println("[全局]操作：" + event.getType());
+		System.out.println("操作：" + event.getType());
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,8 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 	public void notify(DelegateTask delegateTask) {
 		String taskId = delegateTask.getId();
 		String taskName = delegateTask.getName();
-		logger.info("[全局]task id={},task name={}",taskId,taskName);
+		logger.info("task id={},task name={}",taskId,taskName);
+		System.out.println("[taskId]:"+taskId+", [taskName]:"+taskName);
 		
 	}
 
@@ -78,8 +79,8 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 	public void notify(DelegateExecution execution) {
 		String executionId = execution.getId();
 		String eventName = execution.getEventName();
-		logger.info("[全局]executionId={},eventName={}",executionId,eventName);
-		
+		logger.info("executionId={},eventName={}",executionId,eventName);
+		System.out.println("[executionId]:"+executionId+", [eventName]:"+eventName);
 	}
 
 }

@@ -21,6 +21,7 @@
 
         
         <property name="history" value="full"/>
+       <!-- 设置此属性将使用提供硬限制的LRU（近期最少使用算法）缓存替换默认的hashmap。最理想的值设置取决于流程定义的总数和流程实例运行时实际需要的流程定义数量-->
         <property name="processDefinitionCacheLimit" value="10"/>
         <!-- 生成流程图的字体 -->
         <property name="activityFontName" value="宋体"/>

@@ -1,6 +1,5 @@
-package com.xunyi.cloud.wisdom.activiti.zero;
+package com.tairan.cloud.demo.service;
 
-import com.alibaba.fastjson.JSON;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.api.KieBaseConfiguration;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,12 +22,12 @@ import java.util.Map;
  * Created by thomas.su on 2017/10/16 17:07.
  */
 @Service("builderComplexFlowProcessService")
-public class BuilderComplexFlowProcessService{
+public class BuilderComplexFlowProcessService {
     private final static Logger logger = LoggerFactory.getLogger(BuilderComplexFlowProcessService.class);
 
-    public KnowledgeBase buildComplexFlowProcess(List<Map<String, String>> ruleContextList) {
+    public String buildComplexFlowProcess(String versionId,boolean ischecked) {
         try{
-            logger.info("===加载流程规则。ruleContextList={}", JSON.toJSONString(ruleContextList));
+            logger.info("===加载流程。versionId={}",versionId);
             //2.生成规则KnowledgeBuilder、KnowledgeBase
             //加载规则，构建知识库
             KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -40,9 +40,8 @@ public class BuilderComplexFlowProcessService{
             //3. 根据已启用的版本号id查询规则内容
 //            List<Map<String, String>> ruleContextList = buildFlowProcessDao.getRuleContextListByVersionId(versionId);
             //获取规则内容
-
-
-            CompositeKnowledgeBuilder ckb = knowledgeBuilder.batch().type(ResourceType.DRL);
+            List<Map<String, String>> ruleContextList = new ArrayList<>();
+                    CompositeKnowledgeBuilder ckb = knowledgeBuilder.batch().type(ResourceType.DRL);
             if (!CollectionUtils.isEmpty(ruleContextList)) {
                 for (Map<String, String> ruleContextMap : ruleContextList) {
                     String drlContext = ruleContextMap.get("drlContext");
@@ -53,7 +52,7 @@ public class BuilderComplexFlowProcessService{
             ckb.build();
             //检查规则编译是否有误
             boolean hasErrors = knowledgeBuilder.hasErrors();
-            logger.info("*****,检查规则文件编译是否有错:hasErrors={}", hasErrors);
+            logger.info("*****versionId={},检查规则文件编译是否有错:hasErrors={}", versionId, hasErrors);
             if (hasErrors) {
                 StringBuilder errorMsgBuilder = new StringBuilder();
                 errorMsgBuilder.append(knowledgeBuilder.getResults());
@@ -91,11 +90,9 @@ public class BuilderComplexFlowProcessService{
 
             //系统生成规则，加载规则引擎成功，开启版本状态
             logger.info("success");
-
-            return knowledgeBase;
         }catch (Exception e){
             e.printStackTrace();
-            logger.error("规则系统生成有误，加载失败，版本发布失败。",e);
+            logger.error("规则系统生成有误，加载失败，版本发布失败。versionId={}", versionId);
         }
 
         return null;

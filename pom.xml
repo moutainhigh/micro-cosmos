@@ -26,7 +26,7 @@
         <netty-version>4.1.1.Final</netty-version>
         <jboss.resteasy.version>3.0.7.Final</jboss.resteasy.version>
         <dubbo.version>2.8.5-RC1</dubbo.version>
-        <druid.version>1.0.15</druid.version>
+        <druid.version>1.1.10</druid.version>
         <zkclient.version>0.1</zkclient.version>
         <!-- commons工具包版本号 -->
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -114,18 +114,8 @@
         <module>cosmos-kafka</module>
         <module>cosmos-algorithm</module>
         <module>cosmos-activiti</module>
-        <module>cosmos-storm</module>
+        <module>cosmos-demo</module>
+        <module>cosmos-jbpm</module>
     </modules>
 
-    <distributionManagement>
-        <repository>
-            <id>trcloud-releases</id>
-            <url>http://121.41.17.205:18081/nexus/content/repositories/trcloud-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>trcloud-snapshots</id>
-            <url>http://121.41.17.205:18081/nexus/content/repositories/trcloud-snapshots/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
