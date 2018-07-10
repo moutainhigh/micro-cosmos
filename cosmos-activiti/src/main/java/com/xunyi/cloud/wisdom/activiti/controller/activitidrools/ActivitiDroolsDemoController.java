@@ -9,6 +9,7 @@ package com.xunyi.cloud.wisdom.activiti.controller.activitidrools;
 import com.alibaba.fastjson.JSON;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.DynamicAddLisnterService;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.IDynamicActivtiFlowDemo;
+import com.xunyi.cloud.wisdom.activiti.service.activitidrools.TestBusinessRuleTaskService;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.TestService001;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,10 +89,29 @@ public class ActivitiDroolsDemoController {
      * @param strategyname
      * @return
      */
+    //dynamic_loan
     @RequestMapping(value = "/createDynamicAddLisnterDeployment", method = RequestMethod.POST)
     public String createDynamicAddLisnterDeployment(@RequestParam("strategyname") String strategyname){
         dynamicAddLisnterService.createDeployment(strategyname);
         logger.info("测试动态添加监听器……  测试规则");
+        return "{\"code\":\"200\"}";
+    }
+
+    /**
+     * 创建规则节点流程
+     * 测试规则执行
+     * @param strategyname
+     * @return
+     */
+
+    @Autowired
+    private TestBusinessRuleTaskService testBusinessRuleTaskService;
+
+    //ruleflow
+    @RequestMapping(value = "/createTestBusinessRuleTaskFlow", method = RequestMethod.POST)
+    public String createTestBusinessRuleTaskFlow(@RequestParam("strategyname") String strategyname){
+        testBusinessRuleTaskService.createDeployment(strategyname);
+        logger.info("测试规则节点.request....strategyname：{}",strategyname);
         return "{\"code\":\"200\"}";
     }
 }

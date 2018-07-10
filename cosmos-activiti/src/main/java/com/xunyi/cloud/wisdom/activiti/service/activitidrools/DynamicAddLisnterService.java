@@ -6,9 +6,7 @@ import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.repository.Deployment;
-import org.drools.KnowledgeBase;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,13 +77,13 @@ public class DynamicAddLisnterService extends BaseService {
         List<String> ruleNames = new ArrayList<>();
         ruleNames.add("rule1");
 
-        process.addFlowElement(ActivitiUtils.businessRuleTask("bis_id","规则节点",RulesUtils.getRuleNames()));
+        //process.addFlowElement(ActivitiUtils.businessRuleTask("bis_id","规则节点",RulesUtils.getRuleNames()));
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
         process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "userTask1_id"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "bis_id"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "end"));
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "bis_id"));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "end"));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();
@@ -94,22 +92,26 @@ public class DynamicAddLisnterService extends BaseService {
                 .addBpmnModel(bpmn_model_name_prefix+ strategyname + ".bpmn", model).name(deploy_name_prefix+strategyname).deploy();
         logger.warn("流程的重新部署................[完成].");
 
-        KnowledgeBase knowledgeBase = RulesUtils.buildComplexFlowProcess(RulesUtils.ruleContextList());
+
+
+        //**************************  [测试结果：这样加载规则，规则不会执行]
+//        KnowledgeBase knowledgeBase = RulesUtils.buildComplexFlowProcess(RulesUtils.ruleContextList());
 
         //参考RulesDeployer 提取
 //            DeploymentManager deploymentManager = Context
 //                    .getProcessEngineConfiguration()
 //                    .getDeploymentManager();
 
-        DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+//        DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
 
 
         //关联知识仓库及部署
         //缓存是单机的，不是分布式的，需要自行实现
         //或者与流程关联，保存到数据库
 //            https://blog.csdn.net/silent_zqy/article/details/70148298
-        deploymentManager.getKnowledgeBaseCache().add(deployment.getId(), knowledgeBase);
+//        deploymentManager.getKnowledgeBaseCache().add(deployment.getId(), knowledgeBase);
         logger.warn("流程的<规则>部署................[完成].");
+        //**************************  [测试结果：这样加载规则，规则不会执行]
     }
 
 }

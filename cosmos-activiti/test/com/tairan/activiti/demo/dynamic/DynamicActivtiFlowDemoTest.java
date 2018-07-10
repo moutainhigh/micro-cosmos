@@ -4,12 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.tairan.activiti.demo.dynamic.listeners.TestGlobalEventListener;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.ComponentPool;
 import com.xunyi.cloud.wisdom.activiti.zero.BuilderComplexFlowProcessService;
+import com.yichen.cosmos.cloud.platform.util.SUID;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -116,25 +121,54 @@ public class DynamicActivtiFlowDemoTest {
         //资源名称
         String resourceName = "dynamic.bpmn";
         //4. 部署
-        Deployment deployment = activitiRule.getRepositoryService().createDeployment().addBpmnModel(resourceName, model).name("Dynamic process deployment").deploy();
-        if (deployment != null) {
-            //加载关联规则
-            KnowledgeBase knowledgeBase = buildComplexFlowProcess(ruleContextList());
+        Deployment deployment = activitiRule.getRepositoryService().createDeployment()
 
+                .addBpmnModel(resourceName, model).name("Dynamic process deployment").deploy();
+        if (deployment != null) {
+            DeploymentEntityManager deploymentEntityManager =
+                    Context
+                    .getCommandContext()
+                    .getDeploymentEntityManager();
+
+            DeploymentEntity deploymentEntity = deploymentEntityManager.findDeploymentById(deployment.getId());
+
+            List<Map<String, Object>> ruleContextList = ruleContextList();
+            if(!CollectionUtils.isEmpty(ruleContextList)){
+                for(Map<String,Object> ruleMap: ruleContextList){
+                    ResourceEntity resourceEntity = new ResourceEntity();
+                    resourceEntity.setId(SUID.getUUID());
+                    resourceEntity.setName(String.valueOf(ruleMap.get("ruleName"))+".drl");
+                    resourceEntity.setBytes(String.valueOf(ruleMap.get("drlContext")).getBytes());
+                    resourceEntity.setDeploymentId(deployment.getId());
+
+                    deploymentEntity.addResource(resourceEntity);
+                }
+            }
+
+            RulesDeployer rulesDeployer = new RulesDeployer();
+            rulesDeployer.deploy(deploymentEntity,null);
+
+            //加载关联规则 == 可以用于检查规则是否编辑有误
+            KnowledgeBase knowledgeBase = buildComplexFlowProcess(ruleContextList());
+//***********************************************************************************************************************************************************************************
             //参考RulesDeployer 提取
 //            DeploymentManager deploymentManager = Context
 //                    .getProcessEngineConfiguration()
 //                    .getDeploymentManager();
 
-            DeploymentManager deploymentManager = ((ProcessEngineConfigurationImpl)activitiRule.getProcessEngine().getProcessEngineConfiguration()).getDeploymentManager();
+//            ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl)activitiRule.getProcessEngine().getProcessEngineConfiguration();
+//            DeploymentManager deploymentManager = ((ProcessEngineConfigurationImpl)activitiRule.getProcessEngine().getProcessEngineConfiguration()).getDeploymentManager();
+
+
 
             //关联知识仓库及部署
             //缓存是单机的，不是分布式的，需要自行实现
             //或者与流程关联，保存到数据库
 //            https://blog.csdn.net/silent_zqy/article/details/70148298
-            deploymentManager.getKnowledgeBaseCache().add(deployment.getId(), knowledgeBase);
+//            deploymentManager.getKnowledgeBaseCache().add(deployment.getId(), knowledgeBase);
+//            processEngineConfiguration.setDeploymentManager(deploymentManager);
             //-----------------------------------------------------------------------------
-
+//***********************************************************************************************************************************************************************************
             //获取流程定义
             String deplyId = deployment.getId();
             ProcessDefinition processDefinition = activitiRule.getRepositoryService().createProcessDefinitionQuery().deploymentId(deplyId).singleResult();
@@ -173,10 +207,10 @@ public class DynamicActivtiFlowDemoTest {
 
 
 
-    public static List<Map<String, String>> ruleContextList(){
-        List<Map<String, String>> ruleContextList = new ArrayList<>();
-        Map<String,String> rule1Map = new HashMap<>();
-        Map<String,String> rule2Map = new HashMap<>();
+    public static List<Map<String, Object>> ruleContextList(){
+        List<Map<String, Object>> ruleContextList = new ArrayList<>();
+        Map<String,Object> rule1Map = new HashMap<>();
+        Map<String,Object> rule2Map = new HashMap<>();
 
         String rule1 =  "package bpm;\n" +
                 "import java.util.Map;\n" +
@@ -200,7 +234,9 @@ public class DynamicActivtiFlowDemoTest {
                 "        \n" +
                 "end";
 
-        rule1Map.put("drlContext",rule1);
+        rule1Map.put("drlContext",rule1);//rule1.getBytes(Charset.forName("UTF-8"))
+        rule1Map.put("ruleName","bpm-flowgroup_1");
+
         String rule2 = "package bpm;\n" +
                 "import java.util.Map;\n" +
                 "rule \"bpm-flowgroup_2\"\n" +
@@ -223,16 +259,43 @@ public class DynamicActivtiFlowDemoTest {
                 "        \n" +
                 "end";
         rule2Map.put("drlContext",rule2);
-
+        //rule2.getBytes(Charset.forName("UTF-8"))
+        rule2Map.put("ruleName","bpm-flowgroup_2");
 
         ruleContextList.add(rule1Map);
         ruleContextList.add(rule2Map);
         return ruleContextList;
     }
 
+    public void createResource(String name, byte[] bytes, DeploymentEntity deploymentEntity) {
+        ResourceEntity resource = new ResourceEntity();
+        resource.setName(name);
+        resource.setBytes(bytes);
+        resource.setDeploymentId(deploymentEntity.getId());
+
+        Context
+                .getCommandContext()
+                .getDbSqlSession()
+                .insert(resource);
+    }
+
+    public DeploymentEntity getDeployment(String deploymentId) {
+        DeploymentEntity deployment = Context
+                .getCommandContext()
+                .getDeploymentEntityManager()
+                .findDeploymentById(deploymentId);
+        return deployment;
+    }
+
+    public ResourceEntityManager getResourceEntityManager(){
+        return  Context
+                .getCommandContext()
+                .getResourceEntityManager();
+    }
 
 
-    public KnowledgeBase buildComplexFlowProcess(List<Map<String, String>> ruleContextList) {
+
+    public KnowledgeBase buildComplexFlowProcess(List<Map<String, Object>> ruleContextList) {
         try{
             logger.info("===加载流程规则。ruleContextList={}", JSON.toJSONString(ruleContextList));
             //2.生成规则KnowledgeBuilder、KnowledgeBase
@@ -251,8 +314,8 @@ public class DynamicActivtiFlowDemoTest {
 
             CompositeKnowledgeBuilder ckb = knowledgeBuilder.batch().type(ResourceType.DRL);
             if (!CollectionUtils.isEmpty(ruleContextList)) {
-                for (Map<String, String> ruleContextMap : ruleContextList) {
-                    String drlContext = ruleContextMap.get("drlContext");
+                for (Map<String, Object> ruleContextMap : ruleContextList) {
+                    String drlContext = String.valueOf(ruleContextMap.get("drlContext"));
                     System.out.println(drlContext);
                     ckb.add(ResourceFactory.newByteArrayResource(drlContext.getBytes("utf-8")));
                 }

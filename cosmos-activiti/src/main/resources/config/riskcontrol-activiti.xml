@@ -34,7 +34,11 @@
         		<bean class="com.xunyi.cloud.wisdom.activiti.service.event.GlobalEventListener"/>
         	</list>
         </property>
-        
+       <property name="customPostDeployers">
+            <list>
+                <ref bean="rulesDeployer" />
+            </list>
+        </property>
         
     </bean>
 
@@ -51,4 +55,5 @@
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
     <!-- Activiti end -->
 
+    <bean id="rulesDeployer" class="org.activiti.engine.impl.rules.RulesDeployer" />
 </beans>

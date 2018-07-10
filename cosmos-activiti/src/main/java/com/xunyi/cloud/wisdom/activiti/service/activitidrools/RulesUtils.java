@@ -29,15 +29,15 @@ public class RulesUtils {
     public static List<String> getRuleNames(){
         List<String> ruleNames = new ArrayList<>();
 
-        ruleNames.add("bpm-flowgroup_1");
-        ruleNames.add("bpm-flowgroup_2");
+        ruleNames.add("bpm_flowgroup_1");
+        ruleNames.add("bpm_flowgroup_2");
 
         return ruleNames;
     }
-    public static List<Map<String, String>> ruleContextList(){
-        List<Map<String, String>> ruleContextList = new ArrayList<>();
-        Map<String,String> rule1Map = new HashMap<>();
-        Map<String,String> rule2Map = new HashMap<>();
+    public static List<Map<String, Object>> ruleContextList(){
+        List<Map<String, Object>> ruleContextList = new ArrayList<>();
+        Map<String,Object> rule1Map = new HashMap<>();
+        Map<String,Object> rule2Map = new HashMap<>();
 
         String rule1 =  "package bpm;\n" +
                 "import java.util.Map;\n" +
@@ -51,17 +51,20 @@ public class RulesUtils {
                 "        eval(true)\n" +
                 "        map:Map()\n" +
                 "    then\n" +
-                "        System.out.println(\"flowgroup_2\");\n" +
+                "        System.out.println(\"flowgroup_1\");\n" +
                 "        System.out.println(drools.getRule());\n" +
-                "        System.out.println(\"------------222-------------------\");\n" +
+                "        System.out.println(\"------------11111-------------------\");\n" +
                 "      \tSystem.out.println(map);\n" +
-                "        System.out.println(\"-------------222------------------\");\n" +
+                "        System.out.println(\"-------------11111------------------\");\n" +
                 "        map.put(\"age\",\"20\");\n" +
                 "        update(map);\n" +
                 "        \n" +
                 "end";
 
         rule1Map.put("drlContext",rule1);
+        rule1Map.put("ruleName","bpm-flowgroup_1");
+
+
         String rule2 = "package bpm;\n" +
                 "import java.util.Map;\n" +
                 "rule \"bpm-flowgroup_2\"\n" +
@@ -84,7 +87,7 @@ public class RulesUtils {
                 "        \n" +
                 "end";
         rule2Map.put("drlContext",rule2);
-
+        rule2Map.put("ruleName","bpm-flowgroup_2");
 
         ruleContextList.add(rule1Map);
         ruleContextList.add(rule2Map);
@@ -93,7 +96,7 @@ public class RulesUtils {
 
 
 
-    public static KnowledgeBase buildComplexFlowProcess(List<Map<String, String>> ruleContextList) {
+    public static KnowledgeBase buildComplexFlowProcess(List<Map<String, Object>> ruleContextList) {
         try{
             logger.info("===加载流程规则。ruleContextList={}", JSON.toJSONString(ruleContextList));
             //2.生成规则KnowledgeBuilder、KnowledgeBase
@@ -112,8 +115,8 @@ public class RulesUtils {
 
             CompositeKnowledgeBuilder ckb = knowledgeBuilder.batch().type(ResourceType.DRL);
             if (!CollectionUtils.isEmpty(ruleContextList)) {
-                for (Map<String, String> ruleContextMap : ruleContextList) {
-                    String drlContext = ruleContextMap.get("drlContext");
+                for (Map<String, Object> ruleContextMap : ruleContextList) {
+                    String drlContext = String.valueOf(ruleContextMap.get("drlContext"));
                     System.out.println(drlContext);
                     ckb.add(ResourceFactory.newByteArrayResource(drlContext.getBytes("utf-8")));
                 }

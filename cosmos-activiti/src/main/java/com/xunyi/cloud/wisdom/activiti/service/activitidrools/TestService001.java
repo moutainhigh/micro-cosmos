@@ -93,7 +93,7 @@ public class TestService001 extends BaseService{
 
     //根据流程定义，启动一个流程实例
     public Map startProcessByKey(String strategyname,String active){
-
+        Map<String,String> dataMap = new HashMap<>();
         //processDefinitionKey是流程XML 文件中的ID
         //processDefinitionId 是数据库表中 act_re_procdef 对应的记录ID
         ProcessDefinition prodef = repositoryService.createProcessDefinitionQuery().processDefinitionName(proc_def_name_prefix+strategyname).singleResult();
@@ -114,12 +114,14 @@ public class TestService001 extends BaseService{
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
         if(CollectionUtils.isEmpty(tasks)){
-            return null;
+            logger.info("===== [启动流程] 没有执行的任务了 =================== ");
+            dataMap.put("msg","[启动流程] 没有执行的任务了");
+            return dataMap;
         }
 
-        logger.info("task name：{}",tasks.get(0).getName());
+        logger.info("********* task name：{}",tasks.get(0).getName());
 
-        Map<String,String> dataMap = new HashMap<>();
+
         dataMap.put("taskId",tasks.get(0).getId());//因为流程设计的并非是并行的、会签的，且只有一个执行节点
         dataMap.put("processInstanceId",processInstance.getProcessInstanceId());
 
