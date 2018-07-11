@@ -7,10 +7,7 @@ package com.xunyi.cloud.wisdom.activiti.controller.activitidrools;
  */
 
 import com.alibaba.fastjson.JSON;
-import com.xunyi.cloud.wisdom.activiti.service.activitidrools.DynamicAddLisnterService;
-import com.xunyi.cloud.wisdom.activiti.service.activitidrools.IDynamicActivtiFlowDemo;
-import com.xunyi.cloud.wisdom.activiti.service.activitidrools.TestBusinessRuleTaskService;
-import com.xunyi.cloud.wisdom.activiti.service.activitidrools.TestService001;
+import com.xunyi.cloud.wisdom.activiti.service.activitidrools.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,4 +111,19 @@ public class ActivitiDroolsDemoController {
         logger.info("测试规则节点.request....strategyname：{}",strategyname);
         return "{\"code\":\"200\"}";
     }
+
+    @Autowired
+    private TestBusinessRuleTaskService2 testBusinessRuleTaskService2;
+
+
+    //ruleflow
+    //测试独占执行，只是在规则中添加属性 activation-group
+    //因为规则节点绑定了规则名称，相当于规则组了 ruleflow-group
+    @RequestMapping(value = "/createTestBusinessRuleTaskFlow2", method = RequestMethod.POST)
+    public String createTestBusinessRuleTaskFlow2(@RequestParam("strategyname") String strategyname){
+        testBusinessRuleTaskService2.createDeployment(strategyname);
+        logger.info("测试规则节点.request....strategyname：{}",strategyname);
+        return "{\"code\":\"200\"}";
+    }
+
 }
