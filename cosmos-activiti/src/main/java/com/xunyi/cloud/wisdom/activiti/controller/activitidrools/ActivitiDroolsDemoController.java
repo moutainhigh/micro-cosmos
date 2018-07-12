@@ -70,6 +70,17 @@ public class ActivitiDroolsDemoController {
         return JSON.toJSONString(dataMap);
     }
 
+
+    //根据策略名称启用一个流程实例----》
+    //带有BusinessRuleTask ，且绑定drools rules的流程
+    @RequestMapping(value = "/startProcessByKeyOfDrools", method = RequestMethod.POST)
+    public String startProcessByKeyOfDrools(@RequestParam("strategyname") String strategyname,@RequestParam("active") String active){
+        Map<String,String> dataMap = testService001.startProcessByKeyOfDrools(strategyname,active);
+
+        return JSON.toJSONString(dataMap);
+    }
+
+
     //继续执行流程实例中的任务
     @RequestMapping(value = "/completeTask", method = RequestMethod.POST)
     public String completeTask(@RequestParam("taskId") String taskId,@RequestParam("active") String active){
@@ -125,5 +136,24 @@ public class ActivitiDroolsDemoController {
         logger.info("测试规则节点.request....strategyname：{}",strategyname);
         return "{\"code\":\"200\"}";
     }
+
+
+    @Autowired
+    private TestBusinessRuleTaskService3 testBusinessRuleTaskService3;
+
+
+
+//    * 测试：
+//            *  1. 测试drools引入java Map等类，为什么规则没有触发执行？？ 在TestBusinessRuleTaskService2 试过
+//    *  2. 多个规则节点 BusinessRuleTask ，多服务分布式执行时，彼此间规则执行的结果 update(map);后，
+//            *  值是否会传递？（即：第一个规则节点的规则决策，作为第二个规则节点的规则条件）
+    @RequestMapping(value = "/createTestBusinessRuleTaskFlow3", method = RequestMethod.POST)
+    public String createTestBusinessRuleTaskFlow3(@RequestParam("strategyname") String strategyname){
+        testBusinessRuleTaskService3.createDeployment(strategyname);
+        logger.info("测试规则节点.request....strategyname：{}",strategyname);
+        return "{\"code\":\"200\"}";
+    }
+
+
 
 }

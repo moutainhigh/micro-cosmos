@@ -142,6 +142,71 @@ public class TestService001 extends BaseService{
         return dataMap;
     }
 
+
+
+    //根据流程定义，启动一个流程实例
+    //带有BusinessRuleTask ，且绑定drools rules的流程
+    public Map startProcessByKeyOfDrools(String strategyname,String active){
+        Map<String,String> dataMap = new HashMap<>();
+        //processDefinitionKey是流程XML 文件中的ID
+        //processDefinitionId 是数据库表中 act_re_procdef 对应的记录ID
+        ProcessDefinition prodef = repositoryService.createProcessDefinitionQuery().processDefinitionName(proc_def_name_prefix+strategyname).singleResult();
+        Assert.notNull(prodef,"不存在该策略的流程定义。strategyname："+strategyname);
+
+        if(prodef.isSuspended()){
+
+            repositoryService.activateProcessDefinitionById(prodef.getId());
+
+        }
+        //1. 执行，启动一个流程定义的流程实例：非传参示例
+
+//        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey());
+        //2. 执行，启动一个流程定义的流程实例：【传参示例】
+        Map<String,Object> variables = new HashMap<>();
+        Map<String,Object> params = new HashMap<>();
+
+        variables.put("yysContactLoanOrg","10");
+        params.put("yysContactLoanOrg","10");
+        variables.put("${yysContactLoanOrg}","10");
+        params.put("${yysContactLoanOrg}","10");
+
+        variables.put("map",params);
+
+        System.out.println("启动任务之前……");
+        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey());
+        System.out.println("启动任务之后……");
+        //test[guess]:流程中需要 UserTask，暂停后，添加变量影响BusinessRuleTask
+        //org.activiti.engine.ActivitiObjectNotFoundException: execution 2aaad05aac184de6aa7bd9c62871956e doesn't exist
+        //流程至少暂停一下，表act_ru_execution 有记录
+        runtimeService.setVariable(processInstance.getId(),"map",new HashMap<>());
+
+        if(processInstance.isSuspended()){
+            //可用于分布式服务：同一个流程实例可在不同的服务上执行
+            runtimeService.activateProcessInstanceById(processInstance.getProcessInstanceId());
+            //根据一个流程实例的id挂起该流程实例
+//            runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
+        }
+
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
+        if(CollectionUtils.isEmpty(tasks)){
+            logger.info("===== [启动流程] 没有执行的任务了 =================== ");
+            dataMap.put("msg","[启动流程] 没有执行的任务了");
+            return dataMap;
+        }
+
+        logger.info("********* task name：{}",tasks.get(0).getName());
+
+
+        dataMap.put("taskId",tasks.get(0).getId());//因为流程设计的并非是并行的、会签的，且只有一个执行节点
+        dataMap.put("processInstanceId",processInstance.getProcessInstanceId());
+
+        if(!"active".equalsIgnoreCase(active)){
+            runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
+        }
+        return dataMap;
+    }
+
+
     //部署文件
     //生成流程定义
     //deployId 全局唯一,对应strategyname 全局唯一

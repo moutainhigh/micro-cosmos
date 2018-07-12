@@ -19,28 +19,28 @@
     <!--</bean>-->
 
     <!-- 配置线程池,专门给dts推送用的 -->
-    <bean id="dtsTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+  <!--  <bean id="dtsTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="200"/>
         <property name="keepAliveSeconds" value="30000"/>
         <property name="maxPoolSize" value="200"/>
         <property name="queueCapacity" value="20000"/>
     </bean>
-
+-->
     <!-- 配置线程池 -->
-    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    <!--<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="100"/>
         <property name="keepAliveSeconds" value="30000"/>
         <property name="maxPoolSize" value="100"/>
         <property name="queueCapacity" value="20000"/>
-    </bean>
+    </bean>-->
 
     <!-- 专门为巡检留的线程池，该业务场景会一次性放入大量的任务。为避免影响其他业务，故而独立， corePoolSize 不要设太大 比如有100个任务同时跑时，它同时也占用100个数据库连接 -->
-    <bean id="roundCheckTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+   <!-- <bean id="roundCheckTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="30"/>
         <property name="keepAliveSeconds" value="30000"/>
         <property name="maxPoolSize" value="100"/>
         <property name="queueCapacity" value="20000"/>
-    </bean>
+    </bean>-->
 
     <!--<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
        <property name="maxTotal" value="${redis.pool.maxTotal}"/>

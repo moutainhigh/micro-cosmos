@@ -80,7 +80,13 @@ public class ActivitiUtils {
             businessRuleTask.setRuleNames(ruleNames);
         }
         List<String> inputVariables = new ArrayList<>();
-        inputVariables.add("map");
+        //test.drl 如果 rule1 需要执行，必须插入Map实例
+        //因为 rule1 的when条件使用的map
+        //BusinessRuleTaskActivityBehavior
+//        inputVariables.add("${yysContactLoanOrg}");
+//        inputVariables.add("yysContactLoanOrg");
+        inputVariables.add("${map}");
+//        inputVariables.add("map");
         businessRuleTask.setInputVariables(inputVariables);
         //监听器的动态注入(待测试，似乎没效果)
 /*        List<String> taskListenerList = new ArrayList<>();
