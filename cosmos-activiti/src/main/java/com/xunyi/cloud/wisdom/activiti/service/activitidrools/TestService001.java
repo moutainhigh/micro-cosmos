@@ -95,6 +95,8 @@ public class TestService001 extends BaseService{
         List<HistoricVariableInstance> variableInstances = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
         if(CollectionUtils.isNotEmpty(variableInstances)){
             for(HistoricVariableInstance hvi:variableInstances){
+                //注意：
+                //以BusinessRuleTask的入参和结果参数名为例：流程中存在多个规则节点，历史变量名如果相同的话，每次执行时会被覆盖；
                 System.out.println("查询流程历史变量值： "+ hvi.getId()+"  -  "+hvi.getVariableName()+"	 -  "+hvi.getValue());
             }
         }
