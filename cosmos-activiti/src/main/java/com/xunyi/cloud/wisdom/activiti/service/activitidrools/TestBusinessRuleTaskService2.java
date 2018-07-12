@@ -30,11 +30,16 @@ import java.util.Map;
  * 测试：
  *  3.规则分组；独占执行； agenda-group、 ruleflow-group、activation-group
  *
- * 结论：
- *  //测试独占执行，只是在规则中添加属性 activation-group
+ * 结论1：
+ *  //3.1 测试独占执行，只是在规则中添加属性 activation-group
  //因为规则节点绑定了规则名称，相当于规则组了 ruleflow-group：
- 使用jbpm 的businessRuleTask ，属性规则组需要绑定drools里面的规则组；使用Activiti的，直接绑定规则名即可；
+ 3.2  使用jbpm 的businessRuleTask ，属性规则组需要绑定drools里面的规则组；
+ 使用Activiti的，直接绑定规则名即可；
   如果Activiti的规则节点绑定的规则，也指定了ruleflow-group，则规则会不执行
+
+ ----------------------------------------------------------------------------------------------------------
+
+
  */
 @Service
 public class TestBusinessRuleTaskService2 extends BaseService {
@@ -89,12 +94,13 @@ public class TestBusinessRuleTaskService2 extends BaseService {
         process.setName(proc_def_name_prefix+strategyname);
 
         process.addFlowElement(ActivitiUtils.createStartEvent());
-
+//        process.addFlowElement(ActivitiUtils.createUserTask("uid","userTask","ts"));
         process.addFlowElement(ActivitiUtils.businessRuleTask("bis_id","RuleTaskNode",RulesUtils.getRuleNames()));
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
         process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "bis_id"));
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid", "bis_id"));
         process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "end"));
 
         // 2. Generate graphical information
@@ -153,10 +159,12 @@ public class TestBusinessRuleTaskService2 extends BaseService {
             RulesDeployer rulesDeployer = new RulesDeployer();
             rulesDeployer.deploy(deploymentEntity, null);
 
-            //加载关联规则 == 可以用于检查规则是否编辑有误
-//            KnowledgeBase knowledgeBase = buildComplexFlowProcess(ruleContextList());
+
 
         }*/
+
+        //加载关联规则 == 可以用于检查规则是否编辑有误
+        KnowledgeBase knowledgeBase = buildComplexFlowProcess(ruleContextList());
         logger.warn("流程的<规则>部署................[完成].");
 
     }
@@ -166,7 +174,7 @@ public class TestBusinessRuleTaskService2 extends BaseService {
      * 流程绑定3条规则，规则节点绑定 1,2 规则，2的权重优先级高；且为独占执行，那么 只有 2执行
      * @return
      */
-    public static List<Map<String, Object>> ruleContextList(){
+    public static List<Map<String, Object>> ruleContextList2(){
         List<Map<String, Object>> ruleContextList = new ArrayList<>();
         Map<String,Object> rule1Map = new HashMap<>();
         Map<String,Object> rule2Map = new HashMap<>();
@@ -244,6 +252,103 @@ public class TestBusinessRuleTaskService2 extends BaseService {
         ruleContextList.add(rule3Map);//规则名不能相同，流程内，全局唯一
         return ruleContextList;
     }
+
+
+    /**
+     * 测试变量
+     * 引入java、工具类
+     * 问题：引入java包 Map的操作，结果 bpm_flowgroup_1 不执行
+     *  ** 流程启动时，需要进行传参
+     *  参照 第16章 集成规则引擎
+     * @return
+     */
+    public static List<Map<String, Object>> ruleContextList(){
+        List<Map<String, Object>> ruleContextList = new ArrayList<>();
+        Map<String,Object> rule1Map = new HashMap<>();
+        Map<String,Object> rule2Map = new HashMap<>();
+        Map<String,Object> rule3Map = new HashMap<>();
+//        BusinessRuleTaskActivityBehavior
+
+
+        //?? 为什么这条规则引入java后，Map 规则没有匹配，命中执行？？？
+        String rule1 = "package com.sample;\n" +
+                "\n" +
+                "\n" +
+                "import java.util.Map;\n" +
+                "dialect \"java\" \n" +
+                "\n" +
+                "\n" +
+                "rule \"bpm_flowgroup_1\"  \n" +
+                "salience 0 \n" +
+                "no-loop true  \n" +
+                "lock-on-active true  \n" +
+                "when \n" +
+                " \teval(true)\n" +
+//                " \tmap:Map()\n" +
+                "map:Map(this.get(\"yys.yysContactLoanOrg\")== null)" +
+                " \t\t\n" +
+                "then \n" +
+                "\tmap.put(\"result\",\"pass\");\t\n" +
+                "\tSystem.out.println(\"===*******=======\"+drools.getRule());\n" +
+                "\tSystem.out.println(map);\n" +
+                " \tupdate(map);\n" +
+                "\t\n" +
+                "end ";
+
+        rule1Map.put("drlContext",rule1);//rule1.getBytes(Charset.forName("UTF-8"))
+        rule1Map.put("ruleName","bpm_flowgroup_1");
+
+        String rule2 = "package bpm;\n" +
+                "rule \"bpm_flowgroup_2\"\n" +
+                "no-loop true \n" +
+                "lock-on-active true\n" +
+                "salience 63\n" +
+//                "ruleflow-group \"test1\" \n" + //规则组：使用jbpm 的businessRuleTask ，
+//                                                  属性规则组需要绑定drools里面的规则组；使用Activiti的，直接绑定规则名即可；
+//                "activation-group \"activation-group1\"\n" +  //测试独占执行，只是在规则中添加属性 activation-group
+                "    when\n" +
+                "        eval(true)\n" +
+                "    then\n" +
+                "        System.out.println(\"flowgroup_2   执行\");\n" +
+                "        System.out.println(drools.getRule());\n" +
+                "        System.out.println(\"------------222-------------------\");\n" +
+                "        System.out.println(\"-------------222------------------\");\n" +
+                "        \n" +
+                "end";
+        rule2Map.put("drlContext",rule2);
+        //rule2.getBytes(Charset.forName("UTF-8"))
+        rule2Map.put("ruleName","bpm_flowgroup_2");
+
+
+
+        String rule3 = "package bpm;\n" +
+                "rule \"bpm_flowgroup_3\"\n" +
+                "no-loop true \n" +
+                "lock-on-active true\n" +
+                "salience 66\n" +
+//                "ruleflow-group \"test1\" \n" + //规则组：使用jbpm 的businessRuleTask ，
+//                                                  属性规则组需要绑定drools里面的规则组；使用Activiti的，直接绑定规则名即可；
+//                "activation-group \"activation-group1\"\n" +  //测试独占执行，只是在规则中添加属性 activation-group
+                "    when\n" +
+                "        eval(true)\n" +
+                "    then\n" +
+                "        System.out.println(\"flowgroup_3   执行\");\n" +
+                "        System.out.println(drools.getRule());\n" +
+                "        System.out.println(\"------------33333-------------------\");\n" +
+                "        System.out.println(\"-------------3333333------------------\");\n" +
+                "        \n" +
+                "end";
+        rule3Map.put("drlContext",rule3);
+        //rule2.getBytes(Charset.forName("UTF-8"))
+        rule3Map.put("ruleName","bpm_flowgroup_3");
+
+
+        ruleContextList.add(rule1Map);
+        ruleContextList.add(rule2Map);
+        ruleContextList.add(rule3Map);//规则名不能相同，流程内，全局唯一
+        return ruleContextList;
+    }
+
 
     public void createResource(String name, byte[] bytes, DeploymentEntity deploymentEntity) {
         ResourceEntity resource = new ResourceEntity();

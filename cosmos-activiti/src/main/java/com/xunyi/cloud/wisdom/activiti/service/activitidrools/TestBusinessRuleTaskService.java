@@ -62,6 +62,8 @@ public class TestBusinessRuleTaskService extends BaseService {
      *
      *   否则，引擎不会加载规则到KnowledgeBase，当规则执行时，会报出异常信息：“deployment 【xx Id】 doesn't contain any rules”
      *
+     *   参照“Activiti”实战：第16章 集成规则引擎
+     *
      * @param strategyname
      */
     public void createDeployment(String strategyname){

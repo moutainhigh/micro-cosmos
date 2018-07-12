@@ -79,9 +79,11 @@ public class ActivitiUtils {
         if(CollectionUtils.isNotEmpty(ruleNames)){
             businessRuleTask.setRuleNames(ruleNames);
         }
-
-        //监听器的动态注入
-        List<String> taskListenerList = new ArrayList<>();
+        List<String> inputVariables = new ArrayList<>();
+        inputVariables.add("map");
+        businessRuleTask.setInputVariables(inputVariables);
+        //监听器的动态注入(待测试，似乎没效果)
+/*        List<String> taskListenerList = new ArrayList<>();
         taskListenerList.add("com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter");
 
         List<ActivitiListener> list = new ArrayList<>();
@@ -95,7 +97,7 @@ public class ActivitiUtils {
             list.add(listener);
         }
 
-        businessRuleTask.setExecutionListeners(list);
+        businessRuleTask.setExecutionListeners(list);*/
         return businessRuleTask;
     }
 

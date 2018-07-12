@@ -55,5 +55,6 @@
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
     <!-- Activiti end -->
 
+    <!-- 部署drl文件时需要设置一个自定义的部署解析类 -->
     <bean id="rulesDeployer" class="org.activiti.engine.impl.rules.RulesDeployer" />
 </beans>

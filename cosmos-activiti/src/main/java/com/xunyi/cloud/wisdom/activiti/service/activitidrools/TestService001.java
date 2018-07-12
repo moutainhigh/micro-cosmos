@@ -104,7 +104,18 @@ public class TestService001 extends BaseService{
             repositoryService.activateProcessDefinitionById(prodef.getId());
 
         }
+        //1. 执行，启动一个流程定义的流程实例：非传参示例
+
         ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey());
+        //2. 执行，启动一个流程定义的流程实例：【传参示例】
+        /*Map<String,Object> params = new HashMap<>();
+        Map<String,Object> tmpMap = new HashMap<>();
+        params.put("map",tmpMap);*/
+//        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey(),params);
+
+        //流程中需要 UserTask，暂停后，添加变量影响BusinessRuleTask
+//        runtimeService.setVariable(processInstance.getId(),"map",tmpMap);
+
         if(processInstance.isSuspended()){
             //可用于分布式服务：同一个流程实例可在不同的服务上执行
             runtimeService.activateProcessInstanceById(processInstance.getProcessInstanceId());
