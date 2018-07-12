@@ -6,6 +6,7 @@ import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -49,6 +50,8 @@ public class TestService001 extends BaseService{
         }
 
         logger.info("task.isSuspended:{}",task.isSuspended());
+        String proId = task.getProcessInstanceId();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proId).singleResult();
         if(!"active".equalsIgnoreCase(active)){
             if(task.isSuspended()){
                 logger.info("如果任务被挂起了，需要重新激活；目前可以通过挂起流程，实现任务的挂起");
@@ -56,8 +59,8 @@ public class TestService001 extends BaseService{
                 return dataMap;
             }
         }else{
-            String proId = task.getProcessInstanceId();
-            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proId).singleResult();
+//            String proId = task.getProcessInstanceId();
+//            processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proId).singleResult();
             logger.info("processInstance status:{}",processInstance.isSuspended());
             if(processInstance.isSuspended()){
                 runtimeService.activateProcessInstanceById(proId);
@@ -75,6 +78,29 @@ public class TestService001 extends BaseService{
         //因为这个任务不一定是userTask
         taskService.complete(taskId,params);
         logger.info("执行了任务。taskId:{}",taskId);
+
+        //问题：如果流程最后一个节点是businessRuleTask  ,一次性执行完毕后
+        //表 act_ru_variable 变量为空，则无法获取数据
+        //抛出异常信息： "org.activiti.engine.ActivitiObjectNotFoundException","execution 12b047083ae34df7bd07dba44e76d670 doesn't exist"
+        //这时候，可以去历史表（act_hi_varinst），获取数据
+        //---------------------------------------------------------------------------------
+        //map 为规则节点 BusinessRuleTask的入参 ，也是规则里面声明的map变量名
+        /*Map ruleOutputMap = (Map) runtimeService.getVariable(processInstance.getId(), "map");
+        System.out.println("规则执行结果："+ ruleOutputMap);
+
+        //rulesOutput 是BusinessRuleTask的结果参数
+        Object rulesOutput = (Object) runtimeService.getVariable(processInstance.getId(), "rulesOutput");
+        System.out.println("规则执行结果："+ JSON.toJSONString(rulesOutput));*/
+
+        List<HistoricVariableInstance> variableInstances = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
+        if(CollectionUtils.isNotEmpty(variableInstances)){
+            for(HistoricVariableInstance hvi:variableInstances){
+                System.out.println("查询流程历史变量值： "+ hvi.getId()+"  -  "+hvi.getVariableName()+"	 -  "+hvi.getValue());
+            }
+        }
+
+
+
         //获取下一个任务
         String processInstanceId = task.getProcessInstanceId();
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
@@ -178,7 +204,8 @@ public class TestService001 extends BaseService{
         //test[guess]:流程中需要 UserTask，暂停后，添加变量影响BusinessRuleTask
         //org.activiti.engine.ActivitiObjectNotFoundException: execution 2aaad05aac184de6aa7bd9c62871956e doesn't exist
         //流程至少暂停一下，表act_ru_execution 有记录
-        runtimeService.setVariable(processInstance.getId(),"map",new HashMap<>());
+        Map initMap = new HashMap();
+        runtimeService.setVariable(processInstance.getId(),"map",initMap);
 
         if(processInstance.isSuspended()){
             //可用于分布式服务：同一个流程实例可在不同的服务上执行

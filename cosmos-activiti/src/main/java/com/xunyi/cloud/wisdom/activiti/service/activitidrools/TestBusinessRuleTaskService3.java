@@ -51,6 +51,8 @@ import java.util.stream.Collectors;
 
  ----------------------------------------------------------------------------------------------------------
 
+ D.同一个规则集内（同一个规则节点的第一个规则的决策结果是否可以（结论：不可以）作为第二个规则的条件，使第二个触发有效）【否】
+
 
  */
 @Service
@@ -136,6 +138,10 @@ public class TestBusinessRuleTaskService3 extends BaseService {
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();
 
+        //加载关联规则 == 可以用于检查规则是否编辑有误
+        KnowledgeBase knowledgeBase = buildComplexFlowProcess(ruleContextList());
+
+
         /*Deployment deployment = repositoryService.createDeployment()
                 .addBpmnModel(bpmn_model_name_prefix+ strategyname + ".bpmn", model).name(deploy_name_prefix+strategyname).deploy();*/
 
@@ -205,8 +211,7 @@ public class TestBusinessRuleTaskService3 extends BaseService {
 
         }*/
 
-        //加载关联规则 == 可以用于检查规则是否编辑有误
-        KnowledgeBase knowledgeBase = buildComplexFlowProcess(ruleContextList());
+
         logger.warn("流程的<规则>部署................[完成].");
 
     }
@@ -241,7 +246,7 @@ public class TestBusinessRuleTaskService3 extends BaseService {
                 "\n" +
                 "\n" +
                 "rule \"biz_rule_1\"  \n" +
-                "salience 0 \n" +
+                "salience 100 \n" +
                 "no-loop true  \n" +
                 "lock-on-active true  \n" +
                 "when \n" +
@@ -254,13 +259,18 @@ public class TestBusinessRuleTaskService3 extends BaseService {
                 "\tSystem.out.println(\"===*******=======\"+drools.getRule());\n" +
                 "\tSystem.out.println(map);\n" +
                 " \tupdate(map);\n" +
+                "        System.out.println(drools.getRule());\n" +
+                "        System.out.println(\"------------111111-------------------\");\n" +
+                "        System.out.println(\"-------------1111111------------------\");\n" +
                 "\t\n" +
                 "end ";
 
         rule1Map.put("drlContext",rule1);//rule1.getBytes(Charset.forName("UTF-8"))
         rule1Map.put("ruleName","biz_rule_1");
 
+
         String rule2 = "package bpm;\n" +
+                "import java.util.Map;\n" +
                 "rule \"biz_rule_2\"\n" +
                 "no-loop true \n" +
                 "lock-on-active true\n" +
@@ -269,7 +279,8 @@ public class TestBusinessRuleTaskService3 extends BaseService {
 //                                                  属性规则组需要绑定drools里面的规则组；使用Activiti的，直接绑定规则名即可；
 //                "activation-group \"activation-group1\"\n" +  //测试独占执行，只是在规则中添加属性 activation-group
                 "    when\n" +
-                "        eval(true)\n" +
+//                "        eval(true)\n" +
+                "       map:Map(this.get(\"result\") == \"pass\") \n" +
                 "    then\n" +
                 "        System.out.println(\"flowgroup_2   执行\");\n" +
                 "        System.out.println(drools.getRule());\n" +

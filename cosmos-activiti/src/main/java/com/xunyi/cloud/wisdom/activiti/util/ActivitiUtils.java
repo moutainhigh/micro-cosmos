@@ -88,6 +88,11 @@ public class ActivitiUtils {
         inputVariables.add("${map}");
 //        inputVariables.add("map");
         businessRuleTask.setInputVariables(inputVariables);
+
+//        输出对象存储到一个流程变量中。注意，结果变量将包含一个对象列表。如果没有指定结果的变量名，默认使用
+//        org.activiti.engine.rules.OUPUT。
+//        rulesOutput
+        businessRuleTask.setResultVariableName("rulesOutput");
         //监听器的动态注入(待测试，似乎没效果)
 /*        List<String> taskListenerList = new ArrayList<>();
         taskListenerList.add("com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter");
