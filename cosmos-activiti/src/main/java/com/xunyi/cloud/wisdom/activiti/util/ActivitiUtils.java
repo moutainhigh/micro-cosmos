@@ -1,8 +1,11 @@
 package com.xunyi.cloud.wisdom.activiti.util;
 
+import com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter;
 import org.activiti.bpmn.model.*;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,8 @@ public class ActivitiUtils {
 
         //监听器的动态注入
         List<String> taskListenerList = new ArrayList<>();
-        taskListenerList.add("com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter");
+//        taskListenerList.add("com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter");
+        taskListenerList.add(TaskLisnter.class.getName());
 
         List<ActivitiListener> list = new ArrayList<>();
         for (String taskListener : taskListenerList) {
@@ -52,10 +56,36 @@ public class ActivitiUtils {
         return userTask;
     }
 
-    public static SequenceFlow createSequenceFlow(String from, String to) {
+    //目前 BusinessRuleTask的规则执行后，监听器继续执行；可以尝试在监听器中将drools执行的决策结果放入到流程变量中
+//    ${count>=1000}
+    public static SequenceFlow createSequenceFlow(String from, String to,String conditionExpression) {
         SequenceFlow flow = new SequenceFlow();
         flow.setSourceRef(from);
         flow.setTargetRef(to);
+        if(StringUtils.isNotEmpty(conditionExpression)){
+            System.out.println("规则条件.sourceRef:"+from+", targetRef:"+ to +",  conditionExpression:"+conditionExpression);
+            flow.setConditionExpression(conditionExpression);
+        }
+
+        //2.监听器的动态注入
+        List<String> taskListenerList = new ArrayList<>();
+        taskListenerList.add(TaskLisnter.class.getName());
+
+        List<ActivitiListener> list = new ArrayList<>();
+        for (String taskListener : taskListenerList) {
+            ActivitiListener listener = new ActivitiListener();
+
+            //规则节点绑定的是 ExecutionListener ，所以事件的绑定需要注意，不能为 TaskListener的
+            listener.setEvent(ExecutionListener.EVENTNAME_TAKE);
+            //1. Spring配置以变量形式调用写入
+            //2. 通过继承TaskListener方法（其它方法可参考 ImplementationType）
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+            listener.setImplementation(taskListener);
+            list.add(listener);
+        }
+
+        flow.setExecutionListeners(list);
+
         return flow;
     }
 
@@ -85,7 +115,7 @@ public class ActivitiUtils {
         //BusinessRuleTaskActivityBehavior
 //        inputVariables.add("${yysContactLoanOrg}");
 //        inputVariables.add("yysContactLoanOrg");
-        inputVariables.add("${map}");
+        inputVariables.add("${map}");//org.activiti.engine.impl.juel.AstEval
 //        inputVariables.add("map");
         businessRuleTask.setInputVariables(inputVariables);
 
@@ -93,14 +123,17 @@ public class ActivitiUtils {
 //        org.activiti.engine.rules.OUPUT。
 //        rulesOutput
         businessRuleTask.setResultVariableName("rulesOutput");
-        //监听器的动态注入(待测试，似乎没效果)
-/*        List<String> taskListenerList = new ArrayList<>();
-        taskListenerList.add("com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter");
+        //=========================================================================================================
+        //2.监听器的动态注入
+        List<String> taskListenerList = new ArrayList<>();
+        taskListenerList.add(TaskLisnter.class.getName());
 
         List<ActivitiListener> list = new ArrayList<>();
         for (String taskListener : taskListenerList) {
             ActivitiListener listener = new ActivitiListener();
-            listener.setEvent(TaskListener.EVENTNAME_ALL_EVENTS);
+
+            //规则节点绑定的是 ExecutionListener ，所以事件的绑定需要注意，不能为 TaskListener的
+            listener.setEvent(ExecutionListener.EVENTNAME_END);
             //1. Spring配置以变量形式调用写入
             //2. 通过继承TaskListener方法（其它方法可参考 ImplementationType）
             listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
@@ -108,7 +141,7 @@ public class ActivitiUtils {
             list.add(listener);
         }
 
-        businessRuleTask.setExecutionListeners(list);*/
+        businessRuleTask.setExecutionListeners(list);
         return businessRuleTask;
     }
 

@@ -1,0 +1,11 @@
+package com.tairan.cloud.whale.wisdom.bean;
+dialect "java"
+rule "testrule_1"
+salience 656
+no-loop true
+lock-on-active true
+when
+    eval(true)
+then
+    System.out.println("执行规则名称："+drools.getRule());
+end

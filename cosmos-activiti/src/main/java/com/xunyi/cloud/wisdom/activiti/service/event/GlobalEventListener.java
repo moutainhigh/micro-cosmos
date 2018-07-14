@@ -49,7 +49,7 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 		}*/
 
 
-		System.out.println("[全局]操作：" + event.getType());
+		System.out.println("[全局]《AAA》操作：" + event.getType());
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 	public void notify(DelegateTask delegateTask) {
 		String taskId = delegateTask.getId();
 		String taskName = delegateTask.getName();
-		logger.info("[全局]task id={},task name={}",taskId,taskName);
+		logger.info("[全局]《BBB》task id={},task name={}",taskId,taskName);
 		
 	}
 
@@ -78,7 +78,7 @@ public class GlobalEventListener implements ActivitiEventListener,ExecutionListe
 	public void notify(DelegateExecution execution) {
 		String executionId = execution.getId();
 		String eventName = execution.getEventName();
-		logger.info("[全局]executionId={},eventName={}",executionId,eventName);
+		logger.info("[全局]《CCC》executionId={},eventName={}",executionId,eventName);
 		
 	}
 

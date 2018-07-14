@@ -129,11 +129,11 @@ public class TestBusinessRuleTaskService3 extends BaseService {
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "uid"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid", "bis_id"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "bis_id2"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id2", "end"));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "uid",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid", "bis_id",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "bis_id2",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id2", "end",null));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();

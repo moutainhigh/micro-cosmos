@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -84,7 +85,8 @@ public class ActivitiDroolsDemoController {
     //继续执行流程实例中的任务
     @RequestMapping(value = "/completeTask", method = RequestMethod.POST)
     public String completeTask(@RequestParam("taskId") String taskId,@RequestParam("active") String active){
-        Map result = testService001.completeTask(taskId,null,active);
+        Map<String,Object> params = new HashMap<>();
+        Map result = testService001.completeTask(taskId,params,active);
         return JSON.toJSONString(result);
     }
 
@@ -150,6 +152,26 @@ public class ActivitiDroolsDemoController {
     @RequestMapping(value = "/createTestBusinessRuleTaskFlow3", method = RequestMethod.POST)
     public String createTestBusinessRuleTaskFlow3(@RequestParam("strategyname") String strategyname){
         testBusinessRuleTaskService3.createDeployment(strategyname);
+        logger.info("测试规则节点.request....strategyname：{}",strategyname);
+        return "{\"code\":\"200\"}";
+    }
+
+
+    //测试线条件
+    //1. 线条件中的变量是否与BusinessRuleTask的drools的变量共用(是否需要重新添加到variables中到task执行中)
+    // 不可以；  "org.activiti.engine.ActivitiException",
+    //"Unknown property used in expression: ${result=='pass'}"
+//    Caused by: org.activiti.engine.impl.javax.el.PropertyNotFoundException: Cannot resolve identifier 'result'
+    //org.activiti.engine.impl.juel.AstEval
+
+
+//    taskService.complete(taskId,params);
+//    线条件、提前终止流程、线监听器、任务决策值线条件可以复用
+    @Autowired
+    private TestSequenceFlowService testSequenceFlowService;
+    @RequestMapping(value = "/createSequenceFlowTest", method = RequestMethod.POST)
+    public String createSequenceFlowTest(@RequestParam("strategyname") String strategyname){
+        testSequenceFlowService.createDeployment(strategyname);
         logger.info("测试规则节点.request....strategyname：{}",strategyname);
         return "{\"code\":\"200\"}";
     }

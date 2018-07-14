@@ -81,9 +81,9 @@ public class DynamicAddLisnterService extends BaseService {
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "userTask1_id"));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "userTask1_id",null));
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "bis_id"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "end"));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "end",null));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();

@@ -76,7 +76,31 @@ public class TestService001 extends BaseService{
         //            taskService.claim();
         //暂不考虑任务的认领（claim、assign）及所属owner
         //因为这个任务不一定是userTask
-        taskService.complete(taskId,params);
+//        taskService.complete(taskId,params);
+
+
+        //20180713 UserTask--》BusinessRuleTask-->UserTask----》BusinessRuleTask
+        //任务执行时，下一条线可能会用到连线变量
+        //变量值可能来自上一个规则节点的drools的决策结果，也可能来自MQ或其它第三方传入的值
+
+        Map<String,Object> flowParamMap = new HashMap<>();
+        flowParamMap.putAll(params);
+        //获取BusinessRuleTask 的drools的值，这里输出结果都 统一为 rulesOutput，且在流程执行过程中，所以
+        //可以直接从表act_ru_variable 中获取
+        /*
+        在这里取值是不对的
+        1. 时机不对，应该在drools执行完毕后就获取，因为下面线中条件变量开始使用了
+        2. 执行完后遇UserTask暂停
+        Object obj = runtimeService.getVariable(processInstance.getId(), "rulesOutput");
+        System.out.println("看看取出来的变量是啥格式："+ JSON.toJSONString(obj));
+        if(obj instanceof  Map){
+            flowParamMap.putAll((Map) obj);
+        }*/
+
+        //test  TODO
+//        flowParamMap.put("result","pass");
+        taskService.complete(taskId,flowParamMap);
+
         logger.info("执行了任务。taskId:{}",taskId);
 
         //问题：如果流程最后一个节点是businessRuleTask  ,一次性执行完毕后
@@ -97,6 +121,9 @@ public class TestService001 extends BaseService{
             for(HistoricVariableInstance hvi:variableInstances){
                 //注意：
                 //以BusinessRuleTask的入参和结果参数名为例：流程中存在多个规则节点，历史变量名如果相同的话，每次执行时会被覆盖；
+                //查询结果示例：
+                //查询流程历史变量值： 5b4aaa15e08442b4ab5958505b65677d  -  map	 -  {}
+//                查询流程历史变量值： 8c00d6544e634f0d808cf16ccb167dc0  -  rulesOutput	 -  [{result=pass}]
                 System.out.println("查询流程历史变量值： "+ hvi.getId()+"  -  "+hvi.getVariableName()+"	 -  "+hvi.getValue());
             }
         }
@@ -207,6 +234,8 @@ public class TestService001 extends BaseService{
         //org.activiti.engine.ActivitiObjectNotFoundException: execution 2aaad05aac184de6aa7bd9c62871956e doesn't exist
         //流程至少暂停一下，表act_ru_execution 有记录
         Map initMap = new HashMap();
+        String processInstanceId = processInstance.getProcessInstanceId();
+        initMap.put("processInstanceId",processInstanceId);
         runtimeService.setVariable(processInstance.getId(),"map",initMap);
 
         if(processInstance.isSuspended()){
@@ -283,9 +312,9 @@ public class TestService001 extends BaseService{
         process.addFlowElement(ActivitiUtils.createUserTask("task2", "thomas Second task", "suzhiqiang"));
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "task1"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("task1", "task2"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("task2", "end"));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "task1",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("task1", "task2",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("task2", "end",null));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();
