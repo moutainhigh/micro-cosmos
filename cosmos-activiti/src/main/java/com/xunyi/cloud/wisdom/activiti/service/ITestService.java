@@ -8,4 +8,6 @@ import com.xunyi.cloud.wisdom.activiti.model.Test;
 public interface ITestService {
 
     public Test getTestById(Integer id);
+
+    public void testName();
 }

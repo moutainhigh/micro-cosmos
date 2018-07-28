@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  //"Unknown property used in expression: ${result=='pass'}"
  Caused by: org.activiti.engine.impl.javax.el.PropertyNotFoundException: Cannot resolve identifier 'result'
  2.线条件、提前终止流程、线监听器
-    通过 drools 的规则调用外部的方法，将决策结果放入流程变量中
+    通过 drools 的规则调用外部的方法，将决策结果放入流程变量中，后面的线条件变量才会使用到
 
 
  */
@@ -113,7 +113,19 @@ public class TestSequenceFlowService extends BaseService {
         process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "uid",null));
         process.addFlowElement(ActivitiUtils.createSequenceFlow("uid", "bis_id",null));
         //bis_id 的drools rule 执行结果： result=pass
+        //条件变量写法一：${result=='pass'}  【正确写法】
         process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${result=='pass'}"));
+
+        //条件变量写法二：${result}=='pass'；执行出现异常 condition expression returns non-Boolean: pass=='pass' (java.lang.String)
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${result}=='pass'"));
+
+
+        //条件变量写法三："${result}"=='pass'；执行出现异常    org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=='pass' (java.lang.String)
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","\"${result}\"=='pass'"));
+
+        //条件变量写法三："${result}"=="pass"；；执行出现异常  org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=="pass" (java.lang.String)
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","\"${result}\"==\"pass\""));
+
         process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "bis_id2",null));
         process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id2", "end",null));
 

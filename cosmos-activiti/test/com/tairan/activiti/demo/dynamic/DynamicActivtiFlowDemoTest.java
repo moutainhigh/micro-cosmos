@@ -297,7 +297,7 @@ public class DynamicActivtiFlowDemoTest {
 
     public KnowledgeBase buildComplexFlowProcess(List<Map<String, Object>> ruleContextList) {
         try{
-            logger.info("===加载流程规则。ruleContextList={}", JSON.toJSONString(ruleContextList));
+//            logger.info("===加载流程规则。ruleContextList={}", JSON.toJSONString(ruleContextList));
             //2.生成规则KnowledgeBuilder、KnowledgeBase
             //加载规则，构建知识库
             KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -324,7 +324,7 @@ public class DynamicActivtiFlowDemoTest {
             ckb.build();
             //检查规则编译是否有误
             boolean hasErrors = knowledgeBuilder.hasErrors();
-            logger.info("*****,检查规则文件编译是否有错:hasErrors={}", hasErrors);
+//            logger.info("*****,检查规则文件编译是否有错:hasErrors={}", hasErrors);
             if (hasErrors) {
                 StringBuilder errorMsgBuilder = new StringBuilder();
                 errorMsgBuilder.append(knowledgeBuilder.getResults());
@@ -371,4 +371,93 @@ public class DynamicActivtiFlowDemoTest {
         logger.info("knowledgeBase....... failed");
         return null;
     }
+
+
+    /**
+     * 测试加载相同规则名称到知识仓库中
+     */
+    @Test
+    public void duplicateRuleTest(){
+        //加载关联规则 == 可以用于检查规则是否编辑有误
+        for(int i = 0; i< 100000; i++){
+            final int j = i;
+            new Thread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                KnowledgeBase knowledgeBase = buildComplexFlowProcess(duplicateRuleContextList());
+                            }catch (Exception e){
+                                System.out.println("第 【"+j+"】加载异常");
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            ).start();
+        }
+    }
+
+
+
+
+    public static List<Map<String, Object>> duplicateRuleContextList(){
+        List<Map<String, Object>> ruleContextList = new ArrayList<>();
+        Map<String,Object> rule1Map = new HashMap<>();
+        Map<String,Object> rule2Map = new HashMap<>();
+
+        String rule1 =  "package bpm;\n" +
+                "import java.util.Map;\n" +
+                "rule \"bpm-flowgroup_1\"\n" +
+                "no-loop true \n" +
+                "lock-on-active true\n" +
+                "salience 60\n" +
+//                "ruleflow-group \"test1\" \n" +
+//                "activation-group \"activation-group1\"\n" +
+                "    when\n" +
+                "        eval(true)\n" +
+                "        map:Map()\n" +
+                "    then\n" +
+                "        System.out.println(\"flowgroup_2\");\n" +
+                "        System.out.println(drools.getRule());\n" +
+                "        System.out.println(\"------------222-------------------\");\n" +
+                "      \tSystem.out.println(map);\n" +
+                "        System.out.println(\"-------------222------------------\");\n" +
+                "        map.put(\"age\",\"20\");\n" +
+                "        update(map);\n" +
+                "        \n" +
+                "end";
+
+        rule1Map.put("drlContext",rule1);//rule1.getBytes(Charset.forName("UTF-8"))
+        rule1Map.put("ruleName","bpm-flowgroup_1");
+
+        String rule2 = "package bpm;\n" +
+                "import java.util.Map;\n" +
+                "rule \"bpm-flowgroup_2\"\n" +
+                "no-loop true \n" +
+                "lock-on-active true\n" +
+                "salience 59\n" +
+//                "ruleflow-group \"test1\" \n" +
+//                "activation-group \"activation-group1\"\n" +
+                "    when\n" +
+                "        eval(true)\n" +
+                "        map:Map()\n" +
+                "    then\n" +
+                "        System.out.println(\"flowgroup_2\");\n" +
+                "        System.out.println(drools.getRule());\n" +
+                "        System.out.println(\"------------222-------------------\");\n" +
+                "      \tSystem.out.println(map);\n" +
+                "        System.out.println(\"-------------222------------------\");\n" +
+                "        map.put(\"age\",\"20\");\n" +
+                "        update(map);\n" +
+                "        \n" +
+                "end";
+        rule2Map.put("drlContext",rule2);
+        //rule2.getBytes(Charset.forName("UTF-8"))
+        rule2Map.put("ruleName","bpm-flowgroup_2");
+
+        ruleContextList.add(rule1Map);
+        ruleContextList.add(rule2Map);
+        return ruleContextList;
+    }
+
 }

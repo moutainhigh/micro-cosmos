@@ -17,6 +17,16 @@ import java.util.List;
  */
 public class ActivitiUtils {
 
+
+    public static ScriptTask createScriptTask(String id,String name){
+        ScriptTask scriptTask = new ScriptTask();
+        scriptTask.setId(id);
+        scriptTask.setName(name);
+        scriptTask.setScriptFormat("groovy");
+        scriptTask.setScript("println id:"+ id + ", name:"+ name);
+
+        return scriptTask;
+    }
     public static ServiceTask createServiceTask(String id,String name){
         ServiceTask serviceTask = new ServiceTask();
         serviceTask.setId(id);
@@ -144,6 +154,17 @@ public class ActivitiUtils {
         businessRuleTask.setExecutionListeners(list);
         return businessRuleTask;
     }
+
+
+    public static ExclusiveGateway createExclusiveGateway(String id,String name){
+        ExclusiveGateway  exclusiveGateway = new ExclusiveGateway();
+        exclusiveGateway.setId(id);
+        exclusiveGateway.setName(name);
+//        exclusiveGateway.setDefaultFlow();
+
+        return exclusiveGateway;
+    }
+
 
 
 }

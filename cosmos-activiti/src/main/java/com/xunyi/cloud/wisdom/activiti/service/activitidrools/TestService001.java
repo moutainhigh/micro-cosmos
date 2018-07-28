@@ -136,6 +136,7 @@ public class TestService001 extends BaseService{
         if(CollectionUtils.isEmpty(tasks)){
             logger.info("没有需要执行的任务了");
             dataMap.put("msg","没有需要执行的任务了，流程已经完结");
+            //TODO  获取流程最终所有结果
             return dataMap;
         }
 
@@ -236,6 +237,9 @@ public class TestService001 extends BaseService{
         Map initMap = new HashMap();
         String processInstanceId = processInstance.getProcessInstanceId();
         initMap.put("processInstanceId",processInstanceId);
+        //初始参数
+
+        //流程初始执行时，设置初始变量
         runtimeService.setVariable(processInstance.getId(),"map",initMap);
 
         if(processInstance.isSuspended()){

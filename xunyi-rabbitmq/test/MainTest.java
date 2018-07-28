@@ -13,7 +13,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MainTest {
     public static void main(String[] args){
-        testData();
+        testEnums();
+    }
+
+    public static void testEnums(){
+        System.out.println(DirectEnum.LEFT .equals("LEFT") );
+        System.out.println(DirectEnum.RIGHT);
+
+        System.out.println(DirectEnum.LEFT.name().equals("LEFT"));
+        System.out.println(DirectEnum.RIGHT.name());
     }
 
     public static String test1111(){

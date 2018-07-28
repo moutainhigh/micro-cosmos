@@ -21,9 +21,9 @@
                     <!--<property name="useInformationSchema" value="true"></property>-->
        <!--</jdbcConnection>-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://10.200.150.9:3306/whale_wisdom?useUnicode=true&amp;characterEncoding=utf-8"
+                        connectionURL="jdbc:mysql://localhost:3306/risk_falcon?useUnicode=true&amp;characterEncoding=utf-8"
                         userId="root"
-                        password="123456">
+                        password="root">
             <!--   针对mysql数据库-->
             <property name="useInformationSchema" value="true"></property>
         </jdbcConnection>
@@ -33,21 +33,21 @@
         </javaTypeResolver>
 
         <!-- dto class -->
-        <javaModelGenerator targetPackage="com.tairanchina.fd.loan.entity"
+        <javaModelGenerator targetPackage="com.tairanchina.csp.rms.common.entity"
                             targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
         <!-- mybatis xml file -->
-        <sqlMapGenerator targetPackage="com.tairanchina.fd.loan.dao"
+        <sqlMapGenerator targetPackage="com.tairanchina.csp.rms.common.mapper"
                          targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
         <!-- mapper class -->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.tairanchina.fd.loan.dao" targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
+                             targetPackage="com.tairanchina.csp.rms.common.dao" targetProject="D:\work\intelij\csp\micro-cosmos\xunyi-rabbitmq\src\main\java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
@@ -75,21 +75,339 @@
         </table>-->
 
 
-    <table schema="" tableName="async_callback_record"
-               domainObjectName="AsyncCallbackRecord"
-               mapperName="AsyncCallbackRecordDao"
+
+
+
+
+        <table schema="" tableName="audit_org_login_log"
+               domainObjectName="AuditOrgLoginLog"
+               mapperName="AuditOrgLoginLogDao"
                enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="audit_org_operation_log"
+               domainObjectName="AuditOrgOperationLog"
+               mapperName="AuditOrgOperationLogDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="audit_sys_login_log"
+               domainObjectName="AuditSysLoginLog"
+               mapperName="AuditSysLoginLogDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="audit_sys_operation_log"
+               domainObjectName="AuditSysOperationLog"
+               mapperName="AuditSysOperationLogDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+
+        <table schema="" tableName="dc_data_source"
+               domainObjectName="DcDataSource"
+               mapperName="DcDataSourceDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="dc_factor_lib"
+               domainObjectName="DcFactorLib"
+               mapperName="DcFactorLibDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="dc_field_lib"
+               domainObjectName="DcFieldLib"
+               mapperName="DcFieldLibDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="mc_application_score_item_record"
+               domainObjectName="McApplicationScoreItemRecord"
+               mapperName="McApplicationScoreItemRecordDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="mc_credit_call_detail"
+               domainObjectName="McCreditCallDetail"
+               mapperName="McCreditCallDetailDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="mc_decision_event_record"
+               domainObjectName="McDecisionEventRecord"
+               mapperName="McDecisionEventRecordDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="mc_org_credit_call_count"
+               domainObjectName="McOrgCreditCallCount"
+               mapperName="McOrgCreditCallCountDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="mc_report_collect_record"
+               domainObjectName="McReportCollectRecord"
+               mapperName="McReportCollectRecordDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="mc_sys_credit_call_count"
+               domainObjectName="McSysCreditCallCount"
+               mapperName="McSysCreditCallCountDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="rl_black_list"
+               domainObjectName="RlBlackList"
+               mapperName="RlBlackListDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="rl_black_list_user_tag"
+               domainObjectName="RlBlackListUserTag"
+               mapperName="RlBlackListUserTagDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="rl_grey_list"
+               domainObjectName="RlGreyList"
+               mapperName="RlGreyListDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="rl_grey_list_user_tag"
+               domainObjectName="RlGreyListUserTag"
+               mapperName="RlGreyListUserTagDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="rl_white_list"
+               domainObjectName="RlWhiteList"
+               mapperName="RlWhiteListDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_decision_table_condition"
+               domainObjectName="ScDecisionTableCondition"
+               mapperName="ScDecisionTableConditionDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_decision_table_result"
+               domainObjectName="ScDecisionTableResult"
+               mapperName="ScDecisionTableResultDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_decision_table_rule"
+               domainObjectName="ScDecisionTableRule"
+               mapperName="ScDecisionTableRuleDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_decision_table_title"
+               domainObjectName="ScDecisionTableTitle"
+               mapperName="ScDecisionTableTitleDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_flow_node"
+               domainObjectName="ScFlowNode"
+               mapperName="ScFlowNodeDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_flow_node_line"
+               domainObjectName="ScFlowNodeLine"
+               mapperName="ScFlowNodeLineDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_flow_node_line_condition"
+               domainObjectName="ScFlowNodeLineCondition"
+               mapperName="ScFlowNodeLineConditionDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_model"
+               domainObjectName="ScModel"
+               mapperName="ScModelDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_model_pool_rule_relation"
+               domainObjectName="ScModelPoolRuleRelation"
+               mapperName="ScModelPoolRuleRelationDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_pool_rule"
+               domainObjectName="ScPoolRule"
+               mapperName="ScPoolRuleDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_pool_rule_condition"
+               domainObjectName="ScPoolRuleCondition"
+               mapperName="ScPoolRuleConditionDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_pool_rule_decision"
+               domainObjectName="ScPoolRuleDecision"
+               mapperName="ScPoolRuleDecisionDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_pool_rule_event"
+               domainObjectName="ScPoolRuleEvent"
+               mapperName="ScPoolRuleEventDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_rule_drl"
+               domainObjectName="ScRuleDrl"
+               mapperName="ScRuleDrlDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_rule_groovy"
+               domainObjectName="ScRuleGroovy"
+               mapperName="ScRuleGroovyDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+
+        </table>
+
+        <table schema="" tableName="sc_score_card_condition"
+                       domainObjectName="ScScoreCardCondition"
+                       mapperName="ScScoreCardConditionDao"
+                       enableCountByExample="false"
+                       enableUpdateByExample="false" enableDeleteByExample="false"
+                       enableSelectByExample="false" selectByExampleQueryId="false">
     </table>
 
-  <!--      <table schema="" tableName="apply_model_field"
-               domainObjectName="applyModelFieldDao"
-               mapperName="apply_model_field"
+        <table schema="" tableName="sc_score_card_result"
+               domainObjectName="ScScoreCardResult"
+               mapperName="ScScoreCardResultDao"
                enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
-        </table>-->
+        </table>
+        <table schema="" tableName="sc_score_card_title"
+               domainObjectName="ScScoreCardTitle"
+               mapperName="ScScoreCardTitleDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_strategy"
+               domainObjectName="ScStrategy"
+               mapperName="ScStrategyDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table schema="" tableName="sc_strategy_version"
+               domainObjectName="ScStrategyVersion"
+               mapperName="ScStrategyVersionDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+
+        <table schema="" tableName="sys_dict_common"
+               domainObjectName="SysDictCommon"
+               mapperName="SysDictCommonDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="sys_dict_org"
+               domainObjectName="SysDictOrg"
+               mapperName="SysDictOrgDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="sys_org_access_open_platform"
+               domainObjectName="SysOrgAccessOpenPlatform"
+               mapperName="SysOrgAccessOpenPlatformDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="sys_organization"
+               domainObjectName="SysOrganization"
+               mapperName="SysOrganizationDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table schema="" tableName="sys_org_user"
+               domainObjectName="SysOrgUser"
+               mapperName="SysOrgUserDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+
+        <table schema="" tableName="mc_strategy_event_record"
+               domainObjectName="McStrategyEventRecord"
+               mapperName="McStrategyEventRecordDao"
+               enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
 
     </context>
 </generatorConfiguration>

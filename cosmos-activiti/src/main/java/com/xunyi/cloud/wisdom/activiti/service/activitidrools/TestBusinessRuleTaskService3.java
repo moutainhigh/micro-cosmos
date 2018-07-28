@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
  2.同一个服务(同一个进程)，同一个流程第一个节点执行的决策结果可以作为第二个节点的规则条件 （参照 BusinessRuleTaskActivityBehavior，同一个Knowledge） 【OK】
 3.分布式 不同服务（不同的进程），同一个流程，第一个节点执行的决策结果可以作为第二个节点的规则条件??  【OK】
-4. 为什么 BusinessRuleTask 的入参需要是 ${xxxx} 形式
+4. 为什么 BusinessRuleTask 的入参需要是 ${xxxx} 形式？可参考源码解析：org.activiti.engine.impl.juel.AstEval
 
  List<String> inputVariables = new ArrayList<>();
  //test.drl 如果 rule1 需要执行，必须插入Map实例
@@ -69,7 +69,7 @@ public class TestBusinessRuleTaskService3 extends BaseService {
      *
      * @param strategyname
      */
-    public void createDeployment(String strategyname){
+        public void createDeployment(String strategyname){
         //1. 对旧的部署文件已经删除
         //分布式锁
 
