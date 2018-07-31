@@ -10,8 +10,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.slf4j.Logger;
@@ -25,7 +23,7 @@ import java.util.Map;
  * @Date: 2018/7/6 14:45
  * @Description:
  */
-public class TaskLisnter implements ActivitiEventListener,ExecutionListener,TaskListener {
+public class TaskLisnter implements ExecutionListener,TaskListener {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskLisnter.class);
     @Override
@@ -33,16 +31,24 @@ public class TaskLisnter implements ActivitiEventListener,ExecutionListener,Task
         logger.info("测试动态绑定监听器，==== ActivitiEvent");
         logger.info("》》》》》》》》》》》》》》》》[节点]事件类型：{}",execution.getEventName());
 
-
+        String id = execution.getId();
+        logger.info("》》》》》》》》》》》》》》》》[节点]id：{}",id);
         //如果监听的是流程线事件
         if(execution.getEventName().equals(ExecutionListener.EVENTNAME_TAKE)){
             System.out.println("[监听到了流程线事件******************]");
             Map<String, Object> variables = execution.getVariables();
             System.out.println("变量结果：variables："+ JSON.toJSONString(variables));
+        }else if(execution.getEventName().equals(ExecutionListener.EVENTNAME_START)){
+            logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>[节点]id：{}",id);
         }
 
-        String processInstanceId = execution.getProcessInstanceId();
-        reloadVariables(processInstanceId,"ExecutionListener - DelegateExecution");
+        //20180730 测试 结束节点的 结束事件，执行结束后，获取流程中的所有变量
+        if(execution.getEventName().equals(ExecutionListener.EVENTNAME_END)){
+            logger.info("[测试节点结束事件]........");
+            String currentActivityId = execution.getCurrentActivityId();
+            logger.info("ID:{}",id);
+            logger.info("currentActivityId:{}",currentActivityId);
+        }
     }
 
 
@@ -57,7 +63,18 @@ public class TaskLisnter implements ActivitiEventListener,ExecutionListener,Task
 
         if(TaskListener.EVENTNAME_CREATE.equals(delegateTask.getEventName())){
             logger.info("[监听器]测试动态绑定监听器 [节点创建]== DelegateTask");
-            logger.info("[监听器][节点]名称:{}",taskName);
+            logger.info("[监听器][节点]名称:{},taskdbId:{}",taskName,taskdbId);
+
+
+      /*      TaskService taskService  = (TaskService)SpringContextHelper.getBean("taskService");
+            Task task = taskService.createTaskQuery().taskId(taskdbId).singleResult();
+            String taskDefinitionKey = task.getTaskDefinitionKey();
+            logger.info("[监听器][节点][ID]:{}",taskDefinitionKey);*/
+
+            if(taskName.contains("UT")){
+                logger.error("UserTask!!!!");
+            }
+
 
             //可以异步发起操作=============
 
@@ -77,6 +94,11 @@ public class TaskLisnter implements ActivitiEventListener,ExecutionListener,Task
         reloadVariables(processInstanceId,"TaskListener - DelegateTask");
     }
 
+    /**
+     * 目的：是将BusinessRuleTask决策结果存入到流程变量中（目前测试不可行）
+     * @param processInstanceId
+     * @param source
+     */
     private void reloadVariables(String processInstanceId,String source){
         System.out.println("###########################################source:"+source);
         RuntimeService runtimeService =  (RuntimeService) SpringContextHelper.getBean("runtimeService");
@@ -132,15 +154,5 @@ public class TaskLisnter implements ActivitiEventListener,ExecutionListener,Task
                 }
             }
         }
-    }
-
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        logger.info("nothing.......");
-    }
-
-    @Override
-    public boolean isFailOnException() {
-        return false;
     }
 }

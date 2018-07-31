@@ -2,6 +2,7 @@ package com.xunyi.cloud.wisdom.activiti.service.activitidrools;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
+import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.BaseService;
 import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
@@ -91,8 +92,8 @@ public class TestSequenceFlowService extends BaseService {
         process.setName(proc_def_name_prefix+strategyname);
 
         process.addFlowElement(ActivitiUtils.createStartEvent());
-        process.addFlowElement(ActivitiUtils.createUserTask("uid","userTask","ts"));
-        process.addFlowElement(ActivitiUtils.createUserTask("uid2","userTask","ts"));
+        process.addFlowElement(ActivitiUtils.createUserTask("uid","userTask----------[UT]---------------","ts"));
+        process.addFlowElement(ActivitiUtils.createUserTask("uid2","userTask******[UT]**************","ts"));
 
         //将规则 1，2,3 绑定到规则节点bis_id 上
         List<String> ruleNames = ruleContextList().stream().map(map->
@@ -110,10 +111,13 @@ public class TestSequenceFlowService extends BaseService {
 
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "uid",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow(NodeTypeEnum.START.name(), "uid",null));
         process.addFlowElement(ActivitiUtils.createSequenceFlow("uid", "bis_id",null));
         //bis_id 的drools rule 执行结果： result=pass
-        //条件变量写法一：${result=='pass'}  【正确写法】
+        //1. 条件变量写法一：${result=='pass'}  【正确写法】；其中，result是变量，'pass'是字符串值
+        //2. 如果写成了 ${result==pass}，那么变量就有两个，分别是 result 和 pass；
+        //因变量 pass未设值 ， 执行出现异常 [Request processing failed; nested exception is org.activiti.engine.ActivitiException: Unknown property used in expression: ${result==pass}] with root cause
+       //条件拓展： http://redxun.iteye.com/blog/2257477
         process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${result=='pass'}"));
 
         //条件变量写法二：${result}=='pass'；执行出现异常 condition expression returns non-Boolean: pass=='pass' (java.lang.String)
@@ -127,7 +131,7 @@ public class TestSequenceFlowService extends BaseService {
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","\"${result}\"==\"pass\""));
 
         process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "bis_id2",null));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id2", "end",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id2", NodeTypeEnum.END.name(),null));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();

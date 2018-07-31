@@ -39,7 +39,12 @@
                 <ref bean="rulesDeployer" />
             </list>
         </property>
-        
+
+        <!-- 用于更改流程节点的执行行为 -->
+        <!-- http://redxun.iteye.com/blog/2257477 -->
+        <!-- 包：com.xunyi.cloud.wisdom.activiti.service.custom-->
+   <!--     <property name="activityBehaviorFactory" ref="activityBehaviorFactoryExt"/>-->
+
     </bean>
 
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
@@ -57,4 +62,11 @@
 
     <!-- 部署drl文件时需要设置一个自定义的部署解析类 -->
     <bean id="rulesDeployer" class="org.activiti.engine.impl.rules.RulesDeployer" />
+
+
+<!--    <bean id="activityBehaviorFactoryExt" class="com.xunyi.cloud.wisdom.activiti.service.custom.ActivityBehaviorFactoryExt">
+        <property name="exclusiveGatewayActivityBehaviorExt" ref="exclusiveGatewayActivityBehaviorExt"/>
+    </bean>-->
+
+    <!--<bean id="exclusiveGatewayActivityBehaviorExt" class="com.xunyi.cloud.wisdom.activiti.service.custom.ExclusiveGatewayActivityBehaviorExt"/>-->
 </beans>

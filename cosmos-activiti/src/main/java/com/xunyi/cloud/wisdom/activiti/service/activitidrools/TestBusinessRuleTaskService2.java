@@ -2,6 +2,7 @@ package com.xunyi.cloud.wisdom.activiti.service.activitidrools;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
+import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.BaseService;
 import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
@@ -99,9 +100,9 @@ public class TestBusinessRuleTaskService2 extends BaseService {
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "bis_id",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow(NodeTypeEnum.START.name(), "bis_id",null));
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid", "bis_id"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "end",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", NodeTypeEnum.END.name(),null));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();

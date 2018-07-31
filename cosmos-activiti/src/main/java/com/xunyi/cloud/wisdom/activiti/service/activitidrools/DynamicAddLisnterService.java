@@ -1,6 +1,7 @@
 package com.xunyi.cloud.wisdom.activiti.service.activitidrools;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
+import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.BaseService;
 import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
@@ -81,9 +82,9 @@ public class DynamicAddLisnterService extends BaseService {
 
         process.addFlowElement(ActivitiUtils.createEndEvent());
 
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("start", "userTask1_id",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow(NodeTypeEnum.START.name(), "userTask1_id",null));
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "bis_id"));
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", "end",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("userTask1_id", NodeTypeEnum.END.name(),null));
 
         // 2. Generate graphical information
         new BpmnAutoLayout(model).execute();

@@ -16,7 +16,7 @@
         <start-class>com.xunyi.cloud.wisdom.activiti.ActivitiAppStarter</start-class>
         <activiti-version>5.18.0</activiti-version>
         <!-- <activiti-bpmn>7-201801-EA</activiti-bpmn> --><!--最高版本  7-201801-EA -->
-        
+        <aviator.version>3.1.0</aviator.version>
     </properties>
 
     <dependencies>
@@ -145,6 +145,20 @@
             <groupId>org.drools</groupId>
             <artifactId>knowledge-api</artifactId>
             <version>${drools.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.bsf/bsf-all -->
+     <!--   <dependency>
+            <groupId>org.apache.bsf</groupId>
+            <artifactId>bsf-all</artifactId>
+            <version>3.0-beta3</version>
+        </dependency>-->
+
+        <!-- 公式计算引擎-->
+        <dependency>
+            <groupId>com.googlecode.aviator</groupId>
+            <artifactId>aviator</artifactId>
+            <version>${aviator.version}</version>
         </dependency>
 
     </dependencies>

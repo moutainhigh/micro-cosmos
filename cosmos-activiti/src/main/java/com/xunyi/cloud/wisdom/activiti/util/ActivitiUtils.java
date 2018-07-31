@@ -1,5 +1,6 @@
 package com.xunyi.cloud.wisdom.activiti.util;
 
+import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter;
 import org.activiti.bpmn.model.*;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -101,13 +102,15 @@ public class ActivitiUtils {
 
     public static StartEvent createStartEvent() {
         StartEvent startEvent = new StartEvent();
-        startEvent.setId("start");
+        startEvent.setId(NodeTypeEnum.START.name());
+        startEvent.setName(NodeTypeEnum.START.getDesc());
         return startEvent;
     }
 
     public static EndEvent createEndEvent() {
         EndEvent endEvent = new EndEvent();
-        endEvent.setId("end");
+        endEvent.setId(NodeTypeEnum.END.name());
+        endEvent.setName(NodeTypeEnum.END.getDesc());
 
         return endEvent;
     }
