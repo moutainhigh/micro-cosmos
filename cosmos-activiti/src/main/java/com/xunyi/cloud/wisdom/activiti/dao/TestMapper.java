@@ -2,6 +2,8 @@ package com.xunyi.cloud.wisdom.activiti.dao;
 
 import com.xunyi.cloud.wisdom.activiti.model.Test;
 
+import java.util.List;
+
 public interface TestMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface TestMapper {
     int updateByPrimaryKeySelective(Test record);
 
     int updateByPrimaryKey(Test record);
+
+    List<Test> selectAll();
 }

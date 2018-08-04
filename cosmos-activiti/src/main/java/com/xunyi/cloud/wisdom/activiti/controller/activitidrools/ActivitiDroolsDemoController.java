@@ -176,6 +176,14 @@ public class ActivitiDroolsDemoController {
         return "{\"code\":\"200\"}";
     }
 
+    @RequestMapping(value = "/queryRuntimeProcessInstances", method = RequestMethod.POST)
+    public String queryRuntimeProcessInstances(@RequestParam("strategyname") String strategyname) {
+        return testSequenceFlowService.queryRuntimeProcessInstances(strategyname);
+    }
 
-
+    @RequestMapping(value = "/queryActivitiInfo", method = RequestMethod.POST)
+    public String queryActivitiInfo(@RequestParam("taskId") String taskId){
+        testSequenceFlowService.queryActivitiInfo(taskId);
+        return "{\"code\":200}";
+    }
 }

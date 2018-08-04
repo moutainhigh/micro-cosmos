@@ -61,10 +61,12 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
 
         String taskName = delegateTask.getName();
 
+        String taskDefinitionKey = delegateTask.getTaskDefinitionKey();
+
         if(TaskListener.EVENTNAME_CREATE.equals(delegateTask.getEventName())){
             logger.info("[监听器]测试动态绑定监听器 [节点创建]== DelegateTask");
             logger.info("[监听器][节点]名称:{},taskdbId:{}",taskName,taskdbId);
-
+            logger.info("[监听器][节点]:taskDefinitionKey:{}",taskDefinitionKey);
 
       /*      TaskService taskService  = (TaskService)SpringContextHelper.getBean("taskService");
             Task task = taskService.createTaskQuery().taskId(taskdbId).singleResult();

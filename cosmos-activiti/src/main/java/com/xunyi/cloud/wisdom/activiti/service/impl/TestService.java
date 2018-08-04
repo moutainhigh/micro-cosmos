@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,5 +41,10 @@ public class TestService implements ITestService {
         System.out.println("obj:"+obj);
 
         System.out.println("*******************************");
+    }
+
+    @Override
+    public List<Test> selectAll() {
+        return testMapper.selectAll();
     }
 }

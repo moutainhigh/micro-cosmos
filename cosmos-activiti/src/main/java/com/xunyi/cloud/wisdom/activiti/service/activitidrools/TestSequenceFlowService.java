@@ -8,12 +8,14 @@ import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
-import org.activiti.engine.impl.persistence.entity.ResourceEntity;
-import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.*;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.*;
@@ -47,7 +49,70 @@ public class TestSequenceFlowService extends BaseService {
     private static final String proc_def_id_prefix = "proc_def_id_";
     private static final String bpmn_model_name_prefix = "bpmn_model_name_";
 
+    public void queryActivitiInfo(String taskId){
 
+        ProcessDefinitionEntity processDefinitionEntity = null;
+
+        String id = null;
+
+        TaskDefinition task = null;
+
+        //获取流程实例Id信息
+        String processInstanceId = taskService.createTaskQuery().taskId(taskId).singleResult().getProcessInstanceId();
+
+        //获取流程发布Id信息
+        String definitionId = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult().getProcessDefinitionId();
+
+        processDefinitionEntity = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(definitionId);
+
+        ExecutionEntity execution = (ExecutionEntity) runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+
+        //当前流程节点Id信息
+        String activitiId = execution.getActivityId();
+        //null pointer Exception
+//        ActivityImpl currentActivity = execution.getActivity();
+//        logger.info("currentActivity info:{}",JSON.toJSONString(currentActivity));
+//        Map<String,Object> properties = currentActivity.getProperties();
+//        logger.info("properties info:{}",JSON.toJSONString(properties));
+
+        //获取流程所有节点信息
+        List<ActivityImpl> activitiList = processDefinitionEntity.getActivities();
+        logger.info("流程节点总数为：{}",activitiList.size());
+
+        //遍历所有节点信息
+        for(ActivityImpl activityImpl : activitiList){
+            id = activityImpl.getId();
+            logger.info("- - - - - - - - - - - - - - - - - - - - - - - - - - ");
+            logger.info("节点ID：{}，节点type：{}",id,activityImpl.getProperty("type"));
+
+            Map<String,Object> properties = activityImpl.getProperties();
+            logger.info("properties info:{}",JSON.toJSONString(properties));
+        }
+    }
+
+    public String queryRuntimeProcessInstances(String strategyname){
+        Map<String,String> dataMap = new HashMap<>();
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentName(deploy_name_prefix+strategyname).list();
+        if(CollectionUtils.isNotEmpty(deployments)) {
+            logger.info("deployname={},部署文件已经存在，需删除，重新生成。deployments-size:{}", deploy_name_prefix + strategyname, deployments.size());
+
+            List<String> deployIds = deployments.stream().map(item -> item.getId()).collect(Collectors.toList());
+            logger.info("部署ID列表：{}", JSON.toJSONString(deployIds));
+
+            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().deploymentIdIn(deployIds).list();
+            if (CollectionUtils.isNotEmpty(processInstances)) {
+                logger.warn("有正在运行的流程实例，不可重置！");
+                dataMap.put("desc","【有】正在运行的流程实例，不可重置！");
+                return JSON.toJSONString(dataMap);
+            }else{
+                dataMap.put("desc","【没有】正在运行的流程实例！");
+                return JSON.toJSONString(dataMap);
+            }
+        }
+        dataMap.put("desc","【没有】流程对应的部署！");
+        return JSON.toJSONString(dataMap);
+    }
     /**
      *
      *
@@ -59,7 +124,17 @@ public class TestSequenceFlowService extends BaseService {
 
         List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentName(deploy_name_prefix+strategyname).list();
         if(CollectionUtils.isNotEmpty(deployments)){
-            logger.info("deployname={},部署文件已经存在，需删除，重新生成",deploy_name_prefix+strategyname);
+            logger.info("deployname={},部署文件已经存在，需删除，重新生成。deployments-size:{}",deploy_name_prefix+strategyname,deployments.size());
+
+
+            List<String> deployIds = deployments.stream().map(item->item.getId()).collect(Collectors.toList());
+            logger.info("部署ID列表：{}",JSON.toJSONString(deployIds));
+
+            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().deploymentIdIn(deployIds).list();
+            if(CollectionUtils.isNotEmpty(processInstances)){
+                logger.warn("有正在运行的流程实例，不可重置！");
+                throw new RuntimeException("有正在运行的流程实例，不可重置！");
+            }
 
             //注意删除失败的情况
             //存在进行中的任务或历史用例及任务
@@ -71,9 +146,12 @@ public class TestSequenceFlowService extends BaseService {
 //                repositoryService.suspendProcessDefinitionById(deployment.getId(),true,null);
 
 //                repositoryService.deleteDeployment(deployment.getId());
-                //级联删除流程
+                //是否级联删除流程
                 for(Deployment deployment: deployments){
+                    //1.
                     repositoryService.deleteDeployment(deployment.getId(),true);
+                    //2.
+                    repositoryService.deleteDeployment(deployment.getId());
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -92,8 +170,9 @@ public class TestSequenceFlowService extends BaseService {
         process.setName(proc_def_name_prefix+strategyname);
 
         process.addFlowElement(ActivitiUtils.createStartEvent());
-        process.addFlowElement(ActivitiUtils.createUserTask("uid","userTask----------[UT]---------------","ts"));
-        process.addFlowElement(ActivitiUtils.createUserTask("uid2","userTask******[UT]**************","ts"));
+        process.addFlowElement(ActivitiUtils.createUserTask("uid","userTask----------[UT1]---------------","ts"));
+        process.addFlowElement(ActivitiUtils.createUserTask("uid2","userTask******[UT2]**************","ts"));
+        process.addFlowElement(ActivitiUtils.createUserTask("uid3","userTask******[UT3]**************","ts"));
 
         //将规则 1，2,3 绑定到规则节点bis_id 上
         List<String> ruleNames = ruleContextList().stream().map(map->
@@ -130,7 +209,8 @@ public class TestSequenceFlowService extends BaseService {
         //条件变量写法三："${result}"=="pass"；；执行出现异常  org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=="pass" (java.lang.String)
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","\"${result}\"==\"pass\""));
 
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "bis_id2",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "uid3",null));
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("uid3", "bis_id2",null));
         process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id2", NodeTypeEnum.END.name(),null));
 
         // 2. Generate graphical information
@@ -285,7 +365,7 @@ public class TestSequenceFlowService extends BaseService {
                 "        System.out.println(drools.getRule());\n" +
                 "        System.out.println(\"------------33333-------------------\");\n" +
                 "        System.out.println(\"-------------3333333------------------\");\n" +
-                "           Thread.sleep(10000); \n"+
+//                "           Thread.sleep(10000); \n"+
                 "        \n" +
                 "end";
         rule3Map.put("drlContext",rule3);

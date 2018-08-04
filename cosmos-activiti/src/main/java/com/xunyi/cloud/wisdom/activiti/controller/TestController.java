@@ -1,6 +1,7 @@
 package com.xunyi.cloud.wisdom.activiti.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.xunyi.cloud.wisdom.activiti.model.Test;
 import com.xunyi.cloud.wisdom.activiti.service.ITestService;
 import com.yichen.cosmos.cloud.platform.bean.Response;
 import com.yichen.cosmos.cloud.platform.bean.ResponseStatus;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**简单演示：common_auto_flow2.bpmn 
  * 1. 文件读取加载
@@ -177,4 +179,14 @@ public class TestController {
     }
 
 
+    @RequestMapping(value = "/selectAll", method = RequestMethod.GET)
+    public String selectAll(HttpServletRequest request){
+        List<Test> list = testService.selectAll();
+
+        System.out.println(list.stream().map(item->item.getId()).collect(Collectors.toList()));
+
+
+
+        return JSON.toJSONString(testService.selectAll());
+    }
 }

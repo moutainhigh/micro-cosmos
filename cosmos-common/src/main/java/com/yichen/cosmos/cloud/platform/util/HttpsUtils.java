@@ -103,6 +103,10 @@ public class HttpsUtils {
     public static String doGet(String url) {
         return doGet(url, new HashMap<String, Object>());
     }
+    public static String doGetWithHeader(String url,Map<String,String> headers) {
+        return doGetWithHeader(url, new HashMap<String, Object>(),headers);
+    }
+
 
     /**
      * 发送 GET 请求（HTTP），K-V形式
@@ -142,6 +146,43 @@ public class HttpsUtils {
         }
         return result;
     }
+
+
+    public static String doGetWithHeader(String url, Map<String, Object> params,Map<String,String> headers) {
+        String apiUrl = url;
+        StringBuffer param = new StringBuffer();
+        int i = 0;
+        for (String key : params.keySet()) {
+            if (i == 0)
+                param.append("?");
+            else
+                param.append("&");
+            param.append(key).append("=").append(params.get(key));
+            i++;
+        }
+        apiUrl += param;
+        String result = null;
+        HttpClient httpclient = new DefaultHttpClient();
+        try {
+            HttpGet httpGet = new HttpGet(apiUrl);
+            for(String key: headers.keySet()){
+                httpGet.setHeader(key,headers.get(key));
+            }
+            HttpResponse response = httpclient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+
+            System.out.println("执行状态码 : " + statusCode);
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                result = EntityUtils.toString(entity, "utf-8");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     /**
      * 发送 SSL GET 请求（HTTPS），不带输入数据
@@ -280,6 +321,47 @@ public class HttpsUtils {
         }
         return httpStr;
     }
+
+    /**
+     * 发送 POST 请求（HTTP），JSON形式
+     *
+     * @param apiUrl
+     * @param json   json对象
+     * @return
+     */
+    public static String doPostWithHeader(String apiUrl, Object json,Map<String,String> headers) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String httpStr = null;
+        HttpPost httpPost = new HttpPost(apiUrl);
+        CloseableHttpResponse response = null;
+
+        try {
+            httpPost.setConfig(requestConfig);
+            StringEntity stringEntity = new StringEntity(json.toString(), "UTF-8");// 解决中文乱码问题
+            stringEntity.setContentEncoding("UTF-8");
+            stringEntity.setContentType("application/json");
+            httpPost.setEntity(stringEntity);
+            for(String key: headers.keySet()){
+                httpPost.setHeader(key,headers.get(key));
+            }
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+//			System.out.println(response.getStatusLine().getStatusCode());
+            httpStr = EntityUtils.toString(entity, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return httpStr;
+    }
+
 
     /**
      * 发送 SSL POST 请求（HTTPS），K-V形式
