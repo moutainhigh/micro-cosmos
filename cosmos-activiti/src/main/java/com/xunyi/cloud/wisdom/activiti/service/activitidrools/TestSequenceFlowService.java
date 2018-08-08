@@ -130,11 +130,11 @@ public class TestSequenceFlowService extends BaseService {
             List<String> deployIds = deployments.stream().map(item->item.getId()).collect(Collectors.toList());
             logger.info("部署ID列表：{}",JSON.toJSONString(deployIds));
 
-            List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().deploymentIdIn(deployIds).list();
+           /* List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().deploymentIdIn(deployIds).list();
             if(CollectionUtils.isNotEmpty(processInstances)){
                 logger.warn("有正在运行的流程实例，不可重置！");
                 throw new RuntimeException("有正在运行的流程实例，不可重置！");
-            }
+            }*/
 
             //注意删除失败的情况
             //存在进行中的任务或历史用例及任务
@@ -151,7 +151,7 @@ public class TestSequenceFlowService extends BaseService {
                     //1.
                     repositoryService.deleteDeployment(deployment.getId(),true);
                     //2.
-                    repositoryService.deleteDeployment(deployment.getId());
+//                    repositoryService.deleteDeployment(deployment.getId());
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -197,16 +197,25 @@ public class TestSequenceFlowService extends BaseService {
         //2. 如果写成了 ${result==pass}，那么变量就有两个，分别是 result 和 pass；
         //因变量 pass未设值 ， 执行出现异常 [Request processing failed; nested exception is org.activiti.engine.ActivitiException: Unknown property used in expression: ${result==pass}] with root cause
        //条件拓展： http://redxun.iteye.com/blog/2257477
-        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${result=='pass'}"));
+        //正确
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${result=='pass'}"));
 
-        //条件变量写法二：${result}=='pass'；执行出现异常 condition expression returns non-Boolean: pass=='pass' (java.lang.String)
+        //正确 包含  js
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${(result).indexOf('pass') != -1}"));
+        //正确  不包含  js
+//        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${(result).indexOf('apass') == -1}"));
+        //待测：正则匹配
+        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${!regularService.match('a','b',false)}"));
+
+
+        //错误：条件变量写法二：${result}=='pass'；执行出现异常 condition expression returns non-Boolean: pass=='pass' (java.lang.String)
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","${result}=='pass'"));
 
 
-        //条件变量写法三："${result}"=='pass'；执行出现异常    org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=='pass' (java.lang.String)
+        //错误：条件变量写法三："${result}"=='pass'；执行出现异常    org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=='pass' (java.lang.String)
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","\"${result}\"=='pass'"));
 
-        //条件变量写法三："${result}"=="pass"；；执行出现异常  org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=="pass" (java.lang.String)
+        //错误：条件变量写法三："${result}"=="pass"；；执行出现异常  org.activiti.engine.ActivitiException: condition expression returns non-Boolean: "pass"=="pass" (java.lang.String)
 //        process.addFlowElement(ActivitiUtils.createSequenceFlow("bis_id", "uid2","\"${result}\"==\"pass\""));
 
         process.addFlowElement(ActivitiUtils.createSequenceFlow("uid2", "uid3",null));

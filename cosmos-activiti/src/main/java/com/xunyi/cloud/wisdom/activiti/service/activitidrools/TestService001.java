@@ -1,8 +1,10 @@
 package com.xunyi.cloud.wisdom.activiti.service.activitidrools;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
+import com.alibaba.fastjson.JSON;
 import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.BaseService;
+import com.xunyi.cloud.wisdom.activiti.service.IRegularService;
 import com.xunyi.cloud.wisdom.activiti.util.ActivitiUtils;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.BpmnModel;
@@ -12,6 +14,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -98,9 +101,24 @@ public class TestService001 extends BaseService{
             flowParamMap.putAll((Map) obj);
         }*/
 
+
+        //将数据源反馈的因子值 K-V ==》流程中
+        String processInstanceId = task.getProcessInstanceId();
+        /*runtimeService.setVariables(processInstanceId,params);
+
+        //触发规则，入参名  map
+        Map<String,Object> initMap = runtimeService.getVariable(processInstanceId, ActivitiConstants.FLOW_INPUT_VARIABLE_NAME,Map.class);
+        if(initMap == null || initMap.isEmpty()){
+            initMap = new HashMap<>();//会把旧的覆盖
+        }
+        initMap.putAll(params);
+        runtimeService.setVariable(processInstanceId,ActivitiConstants.FLOW_INPUT_VARIABLE_NAME,initMap);*/
+
+        Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
+        System.out.println("打印出所有的variables: "+ JSON.toJSONString(variables));
         //test  TODO
 //        flowParamMap.put("result","pass");
-        taskService.complete(taskId,flowParamMap);
+        taskService.complete(taskId);
 
         logger.info("执行了任务。taskId:{}",taskId);
 
@@ -129,10 +147,7 @@ public class TestService001 extends BaseService{
             }
         }
 
-
-
         //获取下一个任务
-        String processInstanceId = task.getProcessInstanceId();
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
         if(CollectionUtils.isEmpty(tasks)){
             logger.info("没有需要执行的任务了");
@@ -145,6 +160,7 @@ public class TestService001 extends BaseService{
         dataMap.put("taskId",tasks.get(0).getId());
         return dataMap;
     }
+
 
 
 
@@ -200,7 +216,8 @@ public class TestService001 extends BaseService{
     }
 
 
-
+    @Autowired
+    private IRegularService regularService;
     //根据流程定义，启动一个流程实例
     //带有BusinessRuleTask ，且绑定drools rules的流程
     public Map startProcessByKeyOfDrools(String strategyname,String active){
@@ -215,32 +232,41 @@ public class TestService001 extends BaseService{
             repositoryService.activateProcessDefinitionById(prodef.getId());
 
         }
+
+/*
+        Map<String,Object> initMap = new HashMap<>();
+        //将数据存到线程变量中
+        //流程初始执行时，设置初始变量(注：UserTask监听器TaskListener 比这里跑的快，有可能MQ消息通知已经来了)
+        //监听器与当前线程为同一个线程，所以在监听器中，将入参map放入流程中（优化点：去掉BusinessRuleTask的map参数）
+        if(initMap != null && !initMap.isEmpty()){
+            VariablesUtil.variables.set(initMap);
+        }*/
+
         //1. 执行，启动一个流程定义的流程实例：非传参示例
 
 //        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey());
         //2. 执行，启动一个流程定义的流程实例：【传参示例】
         Map<String,Object> variables = new HashMap<>();
-        Map<String,Object> params = new HashMap<>();
 
-        variables.put("yysContactLoanOrg","10");
-        params.put("yysContactLoanOrg","10");
-        variables.put("${yysContactLoanOrg}","10");
-        params.put("${yysContactLoanOrg}","10");
 
-        variables.put("map",params);
+
+        //正则表达式判断
+        variables.put("regularService",regularService);
 
         System.out.println("启动任务之前……");
-        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey());
+        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey(),variables);
         System.out.println("启动任务之后……");
         //test[guess]:流程中需要 UserTask，暂停后，添加变量影响BusinessRuleTask
         //org.activiti.engine.ActivitiObjectNotFoundException: execution 2aaad05aac184de6aa7bd9c62871956e doesn't exist
         //流程至少暂停一下，表act_ru_execution 有记录
-        Map initMap = new HashMap();
+       Map initMap = new HashMap();
         String processInstanceId = processInstance.getProcessInstanceId();
         initMap.put("processInstanceId",processInstanceId);
         //初始参数
 
         //流程初始执行时，设置初始变量
+        //流程初始执行时，设置初始变量(注：UserTask监听器TaskListener 比这里跑的快，有可能MQ消息通知已经来了，这里才执行，需优化)
+        //考虑一下，把map去掉，直接使用流程变量；同时注意决策值ruleOutput 同步到流程变量中
         runtimeService.setVariable(processInstance.getId(),"map",initMap);
 
         if(processInstance.isSuspended()){

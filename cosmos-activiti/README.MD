@@ -248,6 +248,44 @@
     }
 
 
+> 4. 流程部署空指针问题
+
+    发生问题的代码:
+    // 2. Generate graphical information
+        new BpmnAutoLayout(model).execute();
+
+    异常：
+    java.lang.NullPointerException
+        at org.activiti.bpmn.BpmnAutoLayout.generateSequenceFlowDiagramInterchangeElements(BpmnAutoLayout.java:299)
+        at org.activiti.bpmn.BpmnAutoLayout.generateDiagramInterchangeElements(BpmnAutoLayout.java:276)
+        at org.activiti.bpmn.BpmnAutoLayout.layout(BpmnAutoLayout.java:143)
+        at org.activiti.bpmn.BpmnAutoLayout.execute(BpmnAutoLayout.java:88)
+
+    原因：
+
+    节点没有添加到流程process中；
+    或者节点ID和流程线的开始，终点的节点ID不同
+    导致流程构建时，线指向的ID找不到正确的节点
+
+
+> 5 问题
+
+    org.activiti.bpmn.exceptions.XMLException: cvc-datatype-valid.1.2.1: '1' 不是 'NCName' 的有效值。
+    	at org.activiti.bpmn.converter.BpmnXMLConverter.convertToBpmnModel(BpmnXMLConverter.java:280)
+    	at org.activiti.engine.impl.bpmn.parser.BpmnParse.execute(BpmnParse.java:187)
+    	at org.activiti.engine.impl.bpmn.deployer.BpmnDeployer.deploy(BpmnDeployer.java:113)
+    	at org.activiti.engine.impl.persistence.deploy.DeploymentManager.deploy(DeploymentManager.java:57)
+    	at org.activiti.engine.impl.cmd.DeployCmd.execute(DeployCmd.java:103)
+
+    	问题:activiti部署的时候出现  org.activiti.bpmn.exceptions.XMLException: cvc-datatype-valid.1.2.1: '' 不是 'NCName'
+
+        原因:流程id不能以数字开头
+
+        解决:id重新设置,不能以数字开头
+
+        举例:错误的id 1411bbb
+
+
 
 
 

@@ -2,6 +2,7 @@ package com.xunyi.cloud.wisdom.activiti.util;
 
 import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners.TaskLisnter;
+import com.yichen.cosmos.cloud.platform.util.SUID;
 import org.activiti.bpmn.model.*;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.TaskListener;
@@ -71,6 +72,8 @@ public class ActivitiUtils {
 //    ${count>=1000}
     public static SequenceFlow createSequenceFlow(String from, String to,String conditionExpression) {
         SequenceFlow flow = new SequenceFlow();
+        flow.setId("条件ID_"+ SUID.getUUID());
+        flow.setId("条件名称_"+ from + "_" + to);
         flow.setSourceRef(from);
         flow.setTargetRef(to);
         if(StringUtils.isNotEmpty(conditionExpression)){

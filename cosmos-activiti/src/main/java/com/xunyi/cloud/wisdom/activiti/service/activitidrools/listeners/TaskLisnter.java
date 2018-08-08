@@ -35,9 +35,10 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
         logger.info("》》》》》》》》》》》》》》》》[节点]id：{}",id);
         //如果监听的是流程线事件
         if(execution.getEventName().equals(ExecutionListener.EVENTNAME_TAKE)){
-            System.out.println("[监听到了流程线事件******************]");
+            System.out.println("[监听到了流程线事件*****]，名称："+execution.getCurrentActivityName());
             Map<String, Object> variables = execution.getVariables();
             System.out.println("变量结果：variables："+ JSON.toJSONString(variables));
+
         }else if(execution.getEventName().equals(ExecutionListener.EVENTNAME_START)){
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>[节点]id：{}",id);
         }
@@ -77,6 +78,18 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
                 logger.error("UserTask!!!!");
             }
 
+
+            //流程启动时，设置初始变量值
+         /*   Map initMap = VariablesUtil.variables.get();
+            if(initMap != null && !initMap.isEmpty()){
+                try{
+                    initMap.put("processInstanceId",processInstanceId);
+                    RuntimeService runtimeService = (RuntimeService)SpringContextHelper.getBean("runtimeService");
+                    runtimeService.setVariable(processInstanceId, ActivitiConstants.FLOW_INPUT_VARIABLE_NAME,initMap);
+                } finally {
+                    VariablesUtil.variables.remove();
+                }
+            }*/
 
             //可以异步发起操作=============
 

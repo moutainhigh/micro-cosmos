@@ -1,20 +1,10 @@
 package com.xunyi.cloud.wisdom.activiti.service.event;
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.alibaba.fastjson.JSON;
-import com.xunyi.cloud.wisdom.activiti.constant.ActivitiConstants;
-import com.xunyi.cloud.wisdom.activiti.service.activitidrools.SpringContextHelper;
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.history.HistoricVariableInstanceQuery;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * @author thomas
@@ -40,10 +30,10 @@ public class GlobalEventListener implements ActivitiEventListener{
 		System.out.println("操作：" + event.getType());
 */
 
-		System.out.println("捕获事件类型："+event.getType().name()+"type="+ ToStringBuilder.reflectionToString(event));
+//		System.out.println("捕获事件类型："+event.getType().name()+"type="+ ToStringBuilder.reflectionToString(event));
 		
 		
-		ActivitiEventType eventType = event.getType();
+	/*	ActivitiEventType eventType = event.getType();
 		
 		//事件类型  {@link ActivitiEventType}
 		switch(eventType){
@@ -84,7 +74,7 @@ public class GlobalEventListener implements ActivitiEventListener{
 			 System.out.println("event type name:"+event.getType().name());
          		
 		}
-
+*/
 	}
 
 	@Override
