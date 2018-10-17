@@ -81,6 +81,8 @@ public class ActivitiUtils {
             flow.setConditionExpression(conditionExpression);
         }
 
+
+
         //2.监听器的动态注入
         List<String> taskListenerList = new ArrayList<>();
         taskListenerList.add(TaskLisnter.class.getName());
@@ -102,6 +104,23 @@ public class ActivitiUtils {
 
         return flow;
     }
+
+    public static SequenceFlow createSequenceFlow(String id,String from, String to,String conditionExpression) {
+        SequenceFlow flow = new SequenceFlow();
+        flow.setId("条件ID_"+ SUID.getUUID());
+        flow.setId("条件名称_"+ from + "_" + to);
+        flow.setSourceRef(from);
+        flow.setTargetRef(to);
+        flow.setId(id);
+        if(StringUtils.isNotEmpty(conditionExpression)){
+            System.out.println("规则条件.sourceRef:"+from+", targetRef:"+ to +",  conditionExpression:"+conditionExpression);
+            flow.setConditionExpression(conditionExpression);
+        }
+
+
+        return flow;
+    }
+
 
     public static StartEvent createStartEvent() {
         StartEvent startEvent = new StartEvent();
@@ -166,7 +185,22 @@ public class ActivitiUtils {
         ExclusiveGateway  exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.setId(id);
         exclusiveGateway.setName(name);
-//        exclusiveGateway.setDefaultFlow();
+
+        return exclusiveGateway;
+    }
+
+    /**
+     * 排他网关设置默认流
+     * @param id
+     * @param name
+     * @param defaultFlow
+     * @return
+     */
+    public static ExclusiveGateway createExclusiveGateway(String id,String name, String defaultFlow){
+        ExclusiveGateway  exclusiveGateway = new ExclusiveGateway();
+        exclusiveGateway.setId(id);
+        exclusiveGateway.setName(name);
+        exclusiveGateway.setDefaultFlow(defaultFlow);
 
         return exclusiveGateway;
     }

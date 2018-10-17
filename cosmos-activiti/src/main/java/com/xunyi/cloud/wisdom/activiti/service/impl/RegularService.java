@@ -1,6 +1,7 @@
 package com.xunyi.cloud.wisdom.activiti.service.impl;
 
 import com.xunyi.cloud.wisdom.activiti.service.IRegularService;
+import com.yichen.cosmos.cloud.platform.util.StringTools;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -17,4 +18,16 @@ public class RegularService implements IRegularService,Serializable {
         System.out.println("正在表达式：A:"+A+", B:"+B +", isFormula:"+isFormula);
         return false;
     }
+
+    /**
+     *数字判断
+     * @param number
+     * @return
+     */
+    @Override
+    public boolean isNumber(String number) {
+       return StringTools.isNumberic(number,true,true,true);
+    }
+
+
 }

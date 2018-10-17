@@ -1,6 +1,6 @@
 package com.yichen.cosmos.cloud.platform.util;
 
-import org.apache.commons.codec.Charsets;
+import org.apache.commons.io.Charsets;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;

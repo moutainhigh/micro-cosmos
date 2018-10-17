@@ -287,8 +287,20 @@
 
 
 
+> 6. 线条件，涉及函数调用的问题
 
+    conditionExpression:${isNaN(sex) && (sex=='无报告' || sex == '无数据')}
 
+    org.activiti.engine.impl.javax.el.ELException: Expression uses functions, but no function mapper was provided
+        at org.activiti.engine.impl.juel.Tree.bind(Tree.java:109)
+        at org.activiti.engine.impl.juel.TreeValueExpression.<init>(TreeValueExpression.java:65)
+        at org.activiti.engine.impl.juel.ExpressionFactoryImpl.createValueExpression(ExpressionFactoryImpl.java:428)
+        at org.activiti.engine.impl.juel.ExpressionFactoryImpl.createValueExpression(ExpressionFactoryImpl.java:73)
+        at org.activiti.engine.impl.el.ExpressionManager.createExpression(ExpressionManager.java:80)
+        at org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler.executeParse(SequenceFlowParseHandler.java:61)
+        at org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler.executeParse(SequenceFlowParseHandler.java:30)
+        at org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler.parse(AbstractBpmnParseHandler.java:81)
 
+> 7.  通过 rulesOutput  获取最终数据
 
 

@@ -11,5 +11,8 @@ public class MainTest {
         String ss2 = "ss";
 
         System.out.println(ss1 == ss2);
+
+//        ${(regularService.isNumber(1qaswsd)&&(1qaswsd == 1))}
+
     }
 }

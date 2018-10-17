@@ -27,8 +27,9 @@
         <property name="activityFontName" value="宋体"/>
         <property name="labelFontName" value="宋体"/>
         <property name="idGenerator" ref="uuidGenerator"/>  <!-- 用自定义的uuid主键生成策略 -->
-        
-        
+        <!-- 事务隔离级别:SERIALIZABLE -->
+       <!-- <property name="jdbcDefaultTransactionIsolationLevel" value="4"/>-->
+
         <property name="eventListeners"><!-- //eventListeners事件覆盖了全部事件 -->
         	<list>
         		<bean class="com.xunyi.cloud.wisdom.activiti.service.event.GlobalEventListener"/>

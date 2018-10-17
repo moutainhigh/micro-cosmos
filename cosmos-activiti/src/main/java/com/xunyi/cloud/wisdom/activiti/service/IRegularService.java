@@ -7,4 +7,12 @@ package com.xunyi.cloud.wisdom.activiti.service;
  */
 public interface IRegularService {
     public boolean match(String A, String B, boolean isFormula);
+
+    /**
+     * 是否为数字
+     * @param number
+     * @return
+     */
+    public boolean isNumber(String number);
+
 }

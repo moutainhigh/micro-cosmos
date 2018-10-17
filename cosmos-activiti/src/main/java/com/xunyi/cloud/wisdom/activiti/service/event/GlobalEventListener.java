@@ -3,6 +3,7 @@ package com.xunyi.cloud.wisdom.activiti.service.event;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +76,8 @@ public class GlobalEventListener implements ActivitiEventListener{
          		
 		}
 */
+		logger.warn("捕获事件类型：{},type:{}",event.getType().name(), ToStringBuilder.reflectionToString(event));
+
 	}
 
 	@Override

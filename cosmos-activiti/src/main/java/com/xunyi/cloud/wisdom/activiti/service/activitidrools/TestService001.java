@@ -2,6 +2,7 @@ package com.xunyi.cloud.wisdom.activiti.service.activitidrools;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xunyi.cloud.wisdom.activiti.enums.NodeTypeEnum;
 import com.xunyi.cloud.wisdom.activiti.service.BaseService;
 import com.xunyi.cloud.wisdom.activiti.service.IRegularService;
@@ -40,15 +41,21 @@ public class TestService001 extends BaseService{
     private static final String bpmn_model_name_prefix = "bpmn_model_name_";
 
 
+//    @Transactional(isolation=Isolation.SERIALIZABLE)
     public Map completeTask(String taskId,Map<String,Object> params,String active){
 
         Map<String,String> dataMap = new HashMap<>();
 
         //检查任务是否已经存在
         //防止重复执行
+        //问题：监听器：MQ消息发出去，factor异步迅速通知过来，导致创建的节点还未插入数据库中，所以
+//        查询时，发现任务不存在，导致系统认为任务已经执行完毕
+        //TODO  1. 重试机制  2.先插入DB，再触发监听器(调整顺序)  3.在Query查询前，提交事务Commit，插入DB
+        //问题总结：即数据脏读，读写不一致
+        logger.warn("[执行任务查询，模拟脏读]");
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if(task == null){
-            logger.info("任务不存在.说明已经执行完毕了》taskId:{}",taskId);
+            logger.warn("任务不存在.说明已经执行完毕了》taskId:{}",taskId);
             dataMap.put("msg","任务不存在.说明已经执行完毕了》taskId:"+ taskId);
             return dataMap;
         }
@@ -56,7 +63,7 @@ public class TestService001 extends BaseService{
         logger.info("task.isSuspended:{}",task.isSuspended());
         String proId = task.getProcessInstanceId();
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(proId).singleResult();
-        if(!"active".equalsIgnoreCase(active)){
+      /*  if(!"active".equalsIgnoreCase(active)){
             if(task.isSuspended()){
                 logger.info("如果任务被挂起了，需要重新激活；目前可以通过挂起流程，实现任务的挂起");
                 dataMap.put("msg","如果任务被挂起了，需要重新激活；目前可以通过挂起流程，实现任务的挂起》taskId:"+ taskId);
@@ -69,7 +76,7 @@ public class TestService001 extends BaseService{
             if(processInstance.isSuspended()){
                 runtimeService.activateProcessInstanceById(proId);
             }
-        }
+        }*/
 
         //研究一下任务的暂停和激活
         //然后可以异步发起请求了，接收异步通知，激活，继续执行
@@ -165,6 +172,7 @@ public class TestService001 extends BaseService{
 
 
     //根据流程定义，启动一个流程实例
+//    @Transactional(isolation=Isolation.SERIALIZABLE)
     public Map startProcessByKey(String strategyname,String active){
         Map<String,String> dataMap = new HashMap<>();
         //processDefinitionKey是流程XML 文件中的ID
@@ -179,7 +187,9 @@ public class TestService001 extends BaseService{
         }
         //1. 执行，启动一个流程定义的流程实例：非传参示例
 
+        logger.warn("启动流程——开始.....strategyname:{}",strategyname);
         ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey());
+        logger.warn("流程启动——结束.....strategyname:{}",strategyname);
         //2. 执行，启动一个流程定义的流程实例：【传参示例】
         /*Map<String,Object> params = new HashMap<>();
         Map<String,Object> tmpMap = new HashMap<>();
@@ -203,15 +213,15 @@ public class TestService001 extends BaseService{
             return dataMap;
         }
 
-        logger.info("********* task name：{}",tasks.get(0).getName());
+        logger.warn("****下一个任务名称***** task name：{}",tasks.get(0).getName());
 
 
         dataMap.put("taskId",tasks.get(0).getId());//因为流程设计的并非是并行的、会签的，且只有一个执行节点
         dataMap.put("processInstanceId",processInstance.getProcessInstanceId());
 
-        if(!"active".equalsIgnoreCase(active)){
+        /*if(!"active".equalsIgnoreCase(active)){
             runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
-        }
+        }*/
         return dataMap;
     }
 
@@ -262,6 +272,7 @@ public class TestService001 extends BaseService{
        Map initMap = new HashMap();
         String processInstanceId = processInstance.getProcessInstanceId();
         initMap.put("processInstanceId",processInstanceId);
+        initMap.put("name","thomas");
         //初始参数
 
         //流程初始执行时，设置初始变量
@@ -289,9 +300,9 @@ public class TestService001 extends BaseService{
         dataMap.put("taskId",tasks.get(0).getId());//因为流程设计的并非是并行的、会签的，且只有一个执行节点
         dataMap.put("processInstanceId",processInstance.getProcessInstanceId());
 
-        if(!"active".equalsIgnoreCase(active)){
-            runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
-        }
+//        if(!"active".equalsIgnoreCase(active)){
+//            runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
+//        }
         return dataMap;
     }
 
@@ -354,5 +365,65 @@ public class TestService001 extends BaseService{
                 .addBpmnModel(bpmn_model_name_prefix+ strategyname + ".bpmn", model).name(deploy_name_prefix+strategyname).deploy();
         logger.warn("流程的重新部署................[完成].");
     }
+
+
+
+
+
+
+    //根据流程定义，启动一个流程实例
+//    @Transactional(isolation=Isolation.SERIALIZABLE)
+    public Map startGateWayProcessByKey(String strategyname, JSONObject jsonObject){
+        Map<String,String> dataMap = new HashMap<>();
+        //processDefinitionKey是流程XML 文件中的ID
+        //processDefinitionId 是数据库表中 act_re_procdef 对应的记录ID
+        ProcessDefinition prodef = repositoryService.createProcessDefinitionQuery().processDefinitionName(proc_def_name_prefix+strategyname).singleResult();
+        Assert.notNull(prodef,"不存在该策略的流程定义。strategyname："+strategyname);
+
+        if(prodef.isSuspended()){
+
+            repositoryService.activateProcessDefinitionById(prodef.getId());
+
+        }
+        //1. 执行，启动一个流程定义的流程实例：非传参示例
+
+        logger.warn("启动流程——开始.....strategyname:{}",strategyname);
+        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey(),jsonObject);
+        logger.warn("流程启动——结束.....strategyname:{}",strategyname);
+        //2. 执行，启动一个流程定义的流程实例：【传参示例】
+        /*Map<String,Object> params = new HashMap<>();
+        Map<String,Object> tmpMap = new HashMap<>();
+        params.put("map",tmpMap);*/
+//        ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(prodef.getKey(),params);
+
+        //流程中需要 UserTask，暂停后，添加变量影响BusinessRuleTask
+//        runtimeService.setVariable(processInstance.getId(),"map",tmpMap);
+
+        if(processInstance.isSuspended()){
+            //可用于分布式服务：同一个流程实例可在不同的服务上执行
+            runtimeService.activateProcessInstanceById(processInstance.getProcessInstanceId());
+            //根据一个流程实例的id挂起该流程实例
+//            runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
+        }
+
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
+        if(CollectionUtils.isEmpty(tasks)){
+            logger.info("===== [启动流程] 没有执行的任务了 =================== ");
+            dataMap.put("msg","[启动流程] 没有执行的任务了");
+            return dataMap;
+        }
+
+        logger.warn("****下一个任务名称***** task name：{}",tasks.get(0).getName());
+
+
+        dataMap.put("taskId",tasks.get(0).getId());//因为流程设计的并非是并行的、会签的，且只有一个执行节点
+        dataMap.put("processInstanceId",processInstance.getProcessInstanceId());
+
+        /*if(!"active".equalsIgnoreCase(active)){
+            runtimeService.suspendProcessInstanceById(processInstance.getProcessInstanceId());
+        }*/
+        return dataMap;
+    }
+
 
 }

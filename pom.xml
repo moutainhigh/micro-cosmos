@@ -116,6 +116,9 @@
         <module>cosmos-activiti</module>
         <module>cosmos-demo</module>
         <module>cosmos-jbpm</module>
+        <module>cosmos-activiti6</module>
+        <module>cosmos-hbase</module>
+        <module>cosmos-redis</module>
     </modules>
 
 </project>

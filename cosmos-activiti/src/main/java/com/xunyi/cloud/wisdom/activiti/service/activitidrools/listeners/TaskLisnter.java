@@ -3,7 +3,7 @@ package com.xunyi.cloud.wisdom.activiti.service.activitidrools.listeners;
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.SpringContextHelper;
-import com.xunyi.cloud.wisdom.activiti.service.activitidrools.TestCommonService;
+import com.xunyi.cloud.wisdom.activiti.service.activitidrools.TestService001;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -15,8 +15,10 @@ import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @Author:thomas
@@ -28,7 +30,8 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
     private static final Logger logger = LoggerFactory.getLogger(TaskLisnter.class);
     @Override
     public void notify(DelegateExecution execution) throws Exception {
-        logger.info("测试动态绑定监听器，==== ActivitiEvent");
+        logger.info("》》》》》》[节点]事件类型：{}",execution.getEventName());
+    /*    logger.info("测试动态绑定监听器，==== ActivitiEvent");
         logger.info("》》》》》》》》》》》》》》》》[节点]事件类型：{}",execution.getEventName());
 
         String id = execution.getId();
@@ -49,30 +52,34 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
             String currentActivityId = execution.getCurrentActivityId();
             logger.info("ID:{}",id);
             logger.info("currentActivityId:{}",currentActivityId);
-        }
+        }*/
+
+        //20180815
     }
 
+    AtomicBoolean oneTime = new AtomicBoolean(false);
 
     @Override
     public void notify(DelegateTask delegateTask) {
         String taskdbId = delegateTask.getId();
         String processInstanceId = delegateTask.getProcessInstanceId();
         Map<String, Object> variables = delegateTask.getVariables();
-        logger.info("[监听器]变量 variables：{}",JSON.toJSONString(variables));
+
+        logger.warn("当前任务节点ID：{}，名称：{}",delegateTask.getId(),delegateTask.getName());
 
         String taskName = delegateTask.getName();
 
         String taskDefinitionKey = delegateTask.getTaskDefinitionKey();
 
         if(TaskListener.EVENTNAME_CREATE.equals(delegateTask.getEventName())){
-            logger.info("[监听器]测试动态绑定监听器 [节点创建]== DelegateTask");
-            logger.info("[监听器][节点]名称:{},taskdbId:{}",taskName,taskdbId);
+            logger.info("[create][监听器]");
+           /* logger.info("[监听器][节点]名称:{},taskdbId:{}",taskName,taskdbId);
             logger.info("[监听器][节点]:taskDefinitionKey:{}",taskDefinitionKey);
 
-      /*      TaskService taskService  = (TaskService)SpringContextHelper.getBean("taskService");
+            TaskService taskService  = (TaskService)SpringContextHelper.getBean("taskService");
             Task task = taskService.createTaskQuery().taskId(taskdbId).singleResult();
             String taskDefinitionKey = task.getTaskDefinitionKey();
-            logger.info("[监听器][节点][ID]:{}",taskDefinitionKey);*/
+            logger.info("[监听器][节点][ID]:{}",taskDefinitionKey);
 
             if(taskName.contains("UT")){
                 logger.error("UserTask!!!!");
@@ -80,7 +87,7 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
 
 
             //流程启动时，设置初始变量值
-         /*   Map initMap = VariablesUtil.variables.get();
+            Map initMap = VariablesUtil.variables.get();
             if(initMap != null && !initMap.isEmpty()){
                 try{
                     initMap.put("processInstanceId",processInstanceId);
@@ -89,24 +96,41 @@ public class TaskLisnter implements ExecutionListener,TaskListener {
                 } finally {
                     VariablesUtil.variables.remove();
                 }
-            }*/
+            }
 
             //可以异步发起操作=============
 
             //可以调用其它服务
             TestCommonService testCommonService = (TestCommonService)SpringContextHelper.getBean("testCommonService");
-            testCommonService.info();
+            testCommonService.info();*/
+
+            if(oneTime.compareAndSet(false,true)){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TestService001 testService001 = (TestService001)SpringContextHelper.getBean("testService001");
+                        Map<String,Object> params = new HashMap<>();
+                        //模拟脏读，防止死循环，只执行一次
+                        logger.warn("模拟脏读，防止死循环，只执行一次");
+                        Map result = testService001.completeTask(taskdbId,params,"");
+                    }
+                }).start();
+            }
         }
         if(TaskListener.EVENTNAME_COMPLETE.equals(delegateTask.getEventName())){
-            logger.info("[监听器]测试动态绑定监听器》》》》》》 [节点完成]== DelegateTask");
-            logger.info("[监听器][节点]名称:{}",taskName);
-
+            logger.info("[complete][监听器]");
+//            logger.info("[监听器][节点]名称:{}",taskName);
+/*
             logger.info("[监听器]delegateTask.getProcessInstanceId():{}",delegateTask.getProcessInstanceId());
-            logger.info("[监听器]delegateTask.getExecutionId():{}",delegateTask.getExecutionId());
+            logger.info("[监听器]delegateTask.getExecutionId():{}",delegateTask.getExecutionId());*/
 
         }
 
-        reloadVariables(processInstanceId,"TaskListener - DelegateTask");
+        if(TaskListener.EVENTNAME_ASSIGNMENT.equals(delegateTask.getEventName())){
+            logger.info("[assignment][监听器]");
+        }
+//        reloadVariables(processInstanceId,"TaskListener - DelegateTask");
+
     }
 
     /**

@@ -15,6 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>com.tairan.cloud.demo.JBPMAppStarter</start-class>
+        <drools.version>6.4.0.Final</drools.version>
     </properties>
 
     <dependencies>
@@ -85,13 +86,28 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
-
-
          <dependency>
                 <groupId>com.yichen.cosmos.cloud.platform</groupId>
                 <artifactId>cosmos-common</artifactId>
                 <version>${project.version}</version>
          </dependency>
+        <!-- https://mvnrepository.com/artifact/org.drools/knowledge-api -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>knowledge-api</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-spring</artifactId>
+          <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-test</artifactId>
+          <version>${drools.version}</version>
+      </dependency>
+
     </dependencies>
     <profiles>
         <profile>

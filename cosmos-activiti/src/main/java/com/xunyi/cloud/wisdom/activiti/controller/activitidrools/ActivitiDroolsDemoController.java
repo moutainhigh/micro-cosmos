@@ -7,15 +7,13 @@ package com.xunyi.cloud.wisdom.activiti.controller.activitidrools;
  */
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xunyi.cloud.wisdom.activiti.service.activitidrools.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -185,5 +183,66 @@ public class ActivitiDroolsDemoController {
     public String queryActivitiInfo(@RequestParam("taskId") String taskId){
         testSequenceFlowService.queryActivitiInfo(taskId);
         return "{\"code\":200}";
+    }
+
+    @Autowired
+    private ExclusiveGateWayTestService exclusiveGateWayTestService;
+    @RequestMapping(value = "/createExclusiceGateWayTest", method = RequestMethod.POST)
+    public String createExclusiceGateWayTest(@RequestParam("strategyname") String strategyname){
+        exclusiveGateWayTestService.createDeployment(strategyname);
+        logger.info("【排他节点】测试.request....strategyname：{}",strategyname);
+        return "{\"code\":\"200\"}";
+    }
+
+    @Autowired
+    private ExclusiveGateWayDefaultLineService exclusiveGateWayDefaultLineService;
+    @RequestMapping(value = "/createExclusiceGateWayDefaultLine", method = RequestMethod.POST)
+    public String createExclusiceGateWayDefaultLine(@RequestParam("strategyname") String strategyname){
+        exclusiveGateWayDefaultLineService.createDeployment(strategyname);
+        logger.info("【排他节点】测试.request.两条线，一条线为默认线，或只有一条默认线...strategyname：{}",strategyname);
+        return "{\"code\":\"200\"}";
+    }
+
+
+
+    //继续执行流程实例中的任务
+    @RequestMapping(value = "/completeEWTask", method = RequestMethod.POST)
+    public String completeEWTask(@RequestBody JSONObject params){
+        Map result = exclusiveGateWayTestService.completeTask(params);
+        return JSON.toJSONString(result);
+    }
+
+
+    //================  测试单流程 ========================================================
+    //1. 第一步，创建流程  createDeploymentSingleFlow
+    //2. 第二步，创建流程实例，开启流程   startProcessByKeyOfDrools
+    //3. 第三部，调用完成任务接口
+
+    @Autowired
+    private SingleFlowTestService singleFlowTestService;
+
+    @RequestMapping(value = "/createDeploymentSingleFlow", method = RequestMethod.POST)
+    public String createDeploymentSingleFlow(@RequestParam("strategyname") String strategyname){
+         singleFlowTestService.createDeployment(strategyname);
+        return "{\"code\":200}";
+    }
+
+    @RequestMapping(value = "/completeTaskSingleFlow", method = RequestMethod.POST)
+    public String completeTaskSingleFlow(@RequestBody JSONObject params){
+        singleFlowTestService.completeTask(params);
+        return "{\"code\":200}";
+    }
+
+
+    //根据策略名称启用一个流程实例----》
+    @RequestMapping(value = "/startGateWayProcessByKey", method = RequestMethod.POST)
+    public String startGateWayProcessByKey(@RequestBody JSONObject data){
+        String strategyname = data.getString("strategyname");
+        String active = data.getString("active");
+
+
+        Map<String,String> dataMap = testService001.startGateWayProcessByKey(strategyname,data);
+
+        return JSON.toJSONString(dataMap);
     }
 }
