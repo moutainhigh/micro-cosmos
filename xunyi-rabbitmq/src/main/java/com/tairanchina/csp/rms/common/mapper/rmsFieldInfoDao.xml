@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tairanchina.csp.rms.common.dao.rmsFieldInfoDao">
+  <resultMap id="BaseResultMap" type="com.tairanchina.csp.rms.common.entity.rmsFieldInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="field_code" jdbcType="VARCHAR" property="fieldCode" />
+    <result column="field_name" jdbcType="VARCHAR" property="fieldName" />
+    <result column="factor_code" jdbcType="VARCHAR" property="factorCode" />
+    <result column="factor_name" jdbcType="VARCHAR" property="factorName" />
+    <result column="source_name" jdbcType="VARCHAR" property="sourceName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, field_code, field_name, factor_code, factor_name, source_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rms_field_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from rms_field_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tairanchina.csp.rms.common.entity.rmsFieldInfo">
+    insert into rms_field_info (id, field_code, field_name, 
+      factor_code, factor_name, source_name
+      )
+    values (#{id,jdbcType=INTEGER}, #{fieldCode,jdbcType=VARCHAR}, #{fieldName,jdbcType=VARCHAR}, 
+      #{factorCode,jdbcType=VARCHAR}, #{factorName,jdbcType=VARCHAR}, #{sourceName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tairanchina.csp.rms.common.entity.rmsFieldInfo">
+    insert into rms_field_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fieldCode != null">
+        field_code,
+      </if>
+      <if test="fieldName != null">
+        field_name,
+      </if>
+      <if test="factorCode != null">
+        factor_code,
+      </if>
+      <if test="factorName != null">
+        factor_name,
+      </if>
+      <if test="sourceName != null">
+        source_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="fieldCode != null">
+        #{fieldCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="factorCode != null">
+        #{factorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="factorName != null">
+        #{factorName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceName != null">
+        #{sourceName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tairanchina.csp.rms.common.entity.rmsFieldInfo">
+    update rms_field_info
+    <set>
+      <if test="fieldCode != null">
+        field_code = #{fieldCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        field_name = #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="factorCode != null">
+        factor_code = #{factorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="factorName != null">
+        factor_name = #{factorName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceName != null">
+        source_name = #{sourceName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tairanchina.csp.rms.common.entity.rmsFieldInfo">
+    update rms_field_info
+    set field_code = #{fieldCode,jdbcType=VARCHAR},
+      field_name = #{fieldName,jdbcType=VARCHAR},
+      factor_code = #{factorCode,jdbcType=VARCHAR},
+      factor_name = #{factorName,jdbcType=VARCHAR},
+      source_name = #{sourceName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

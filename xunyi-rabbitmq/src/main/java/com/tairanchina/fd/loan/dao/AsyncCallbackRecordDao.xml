@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tairanchina.fd.loan.dao.AsyncCallbackRecordDao">
+  <resultMap id="BaseResultMap" type="com.tairanchina.fd.loan.entity.AsyncCallbackRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="source_url" jdbcType="VARCHAR" property="sourceUrl" />
+    <result column="check_repeat_code" jdbcType="VARCHAR" property="checkRepeatCode" />
+    <result column="callback_url" jdbcType="VARCHAR" property="callbackUrl" />
+    <result column="try_count" jdbcType="TINYINT" property="tryCount" />
+    <result column="deal_state" jdbcType="VARCHAR" property="dealState" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="org_id" jdbcType="VARCHAR" property="orgId" />
+    <result column="version_id" jdbcType="VARCHAR" property="versionId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.tairanchina.fd.loan.entity.AsyncCallbackRecordWithBLOBs">
+    <result column="post_data" jdbcType="LONGVARCHAR" property="postData" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, source_url, check_repeat_code, callback_url, try_count, deal_state, update_time, 
+    create_time, org_id, version_id
+  </sql>
+  <sql id="Blob_Column_List">
+    post_data, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from async_callback_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from async_callback_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.tairanchina.fd.loan.entity.AsyncCallbackRecordWithBLOBs">
+    insert into async_callback_record (id, source_url, check_repeat_code, 
+      callback_url, try_count, deal_state, 
+      update_time, create_time, org_id, 
+      version_id, post_data, remark
+      )
+    values (#{id,jdbcType=BIGINT}, #{sourceUrl,jdbcType=VARCHAR}, #{checkRepeatCode,jdbcType=VARCHAR}, 
+      #{callbackUrl,jdbcType=VARCHAR}, #{tryCount,jdbcType=TINYINT}, #{dealState,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{orgId,jdbcType=VARCHAR}, 
+      #{versionId,jdbcType=VARCHAR}, #{postData,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tairanchina.fd.loan.entity.AsyncCallbackRecordWithBLOBs">
+    insert into async_callback_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sourceUrl != null">
+        source_url,
+      </if>
+      <if test="checkRepeatCode != null">
+        check_repeat_code,
+      </if>
+      <if test="callbackUrl != null">
+        callback_url,
+      </if>
+      <if test="tryCount != null">
+        try_count,
+      </if>
+      <if test="dealState != null">
+        deal_state,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="versionId != null">
+        version_id,
+      </if>
+      <if test="postData != null">
+        post_data,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sourceUrl != null">
+        #{sourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="checkRepeatCode != null">
+        #{checkRepeatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackUrl != null">
+        #{callbackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="tryCount != null">
+        #{tryCount,jdbcType=TINYINT},
+      </if>
+      <if test="dealState != null">
+        #{dealState,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="versionId != null">
+        #{versionId,jdbcType=VARCHAR},
+      </if>
+      <if test="postData != null">
+        #{postData,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tairanchina.fd.loan.entity.AsyncCallbackRecordWithBLOBs">
+    update async_callback_record
+    <set>
+      <if test="sourceUrl != null">
+        source_url = #{sourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="checkRepeatCode != null">
+        check_repeat_code = #{checkRepeatCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackUrl != null">
+        callback_url = #{callbackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="tryCount != null">
+        try_count = #{tryCount,jdbcType=TINYINT},
+      </if>
+      <if test="dealState != null">
+        deal_state = #{dealState,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="versionId != null">
+        version_id = #{versionId,jdbcType=VARCHAR},
+      </if>
+      <if test="postData != null">
+        post_data = #{postData,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tairanchina.fd.loan.entity.AsyncCallbackRecordWithBLOBs">
+    update async_callback_record
+    set source_url = #{sourceUrl,jdbcType=VARCHAR},
+      check_repeat_code = #{checkRepeatCode,jdbcType=VARCHAR},
+      callback_url = #{callbackUrl,jdbcType=VARCHAR},
+      try_count = #{tryCount,jdbcType=TINYINT},
+      deal_state = #{dealState,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      version_id = #{versionId,jdbcType=VARCHAR},
+      post_data = #{postData,jdbcType=LONGVARCHAR},
+      remark = #{remark,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tairanchina.fd.loan.entity.AsyncCallbackRecord">
+    update async_callback_record
+    set source_url = #{sourceUrl,jdbcType=VARCHAR},
+      check_repeat_code = #{checkRepeatCode,jdbcType=VARCHAR},
+      callback_url = #{callbackUrl,jdbcType=VARCHAR},
+      try_count = #{tryCount,jdbcType=TINYINT},
+      deal_state = #{dealState,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      version_id = #{versionId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
